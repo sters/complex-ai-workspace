@@ -113,6 +113,38 @@ Run linters before completing:
 - **Python**: `flake8` or `ruff`
 - **General**: Check project configuration for lint commands
 
+### Creating Pull Requests
+
+When a TODO item requires creating a PR, follow the `/create-pr` skill guidelines:
+
+1. **Check for PR template** in the repository:
+   ```bash
+   find . -iname "*pull_request_template*" -type f 2>/dev/null
+   ```
+   Common locations: `.github/PULL_REQUEST_TEMPLATE.md`, `.github/pull_request_template.md`
+
+2. **Read and follow the template** if one exists
+
+3. **Create the PR** using `gh pr create` with proper formatting:
+   ```bash
+   gh pr create --title "Title" --body "$(cat <<'EOF'
+   <Fill in template sections or use default format>
+   EOF
+   )"
+   ```
+
+4. **Default format** (if no template):
+   ```markdown
+   ## Summary
+   <bullet points>
+
+   ## Test plan
+   <how tested>
+
+   ## Related issues
+   <links or N/A>
+   ```
+
 ## Scope Boundaries
 
 **DO**:

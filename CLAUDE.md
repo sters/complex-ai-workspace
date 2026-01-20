@@ -9,7 +9,7 @@ This is a multi-repository workspace manager for Claude Code. It enables complex
 ## Primary Workflow
 
 ```
-/start-working {task-description}
+/init-workspace {task-description}
 ```
 
 This skill:
@@ -17,7 +17,16 @@ This skill:
 2. Clones or updates target repositories
 3. Creates git worktrees for isolated work
 4. Generates README.md and TODO-{repo-name}.md templates
-5. Delegates to `workspace-repo-todo-executor` agent for execution
+
+After initialization, use:
+```
+/execute-workspace
+```
+
+This skill:
+1. Works through TODO items in the workspace
+2. Delegates to `workspace-repo-todo-executor` agent for execution
+3. Verifies completion (tests, lints, commits)
 
 ## Directory Structure
 
@@ -28,7 +37,9 @@ This skill:
 │   │   ├── workspace-repo-todo-executor.md    # Executes TODO items
 │   │   └── review-workspace-repo-changes.md   # Code review agent
 │   ├── skills/                 # User-invokable skills
-│   │   ├── start-working/      # Main workflow entrypoint
+│   │   ├── init-workspace/     # Workspace initialization
+│   │   ├── execute-workspace/  # Task execution
+│   │   ├── create-pr/          # PR creation with template
 │   │   └── review-workspace-changes/
 │   └── settings.local.json     # Allowed bash commands
 ├── repositories/               # Cloned repos (git data source)
@@ -43,7 +54,9 @@ This skill:
 
 ### Skills (User-invokable)
 
-- **start-working**: Setup workspace and begin task execution
+- **init-workspace**: Initialize workspace directory and setup git worktrees
+- **execute-workspace**: Execute tasks in an initialized workspace
+- **create-pr**: Create a pull request following the repository's PR template
 - **review-workspace-changes**: Review all changes across workspace repositories
 
 ### Sub-Agents (System-invoked)
@@ -54,11 +67,11 @@ This skill:
 ## Setup Script
 
 ```bash
-./.claude/skills/start-working/scripts/setup-workspace.sh <task-type> <description> <org/repo> [base-branch] [ticket-id]
+./.claude/skills/init-workspace/scripts/setup-workspace.sh <task-type> <description> <org/repo> [base-branch] [ticket-id]
 
 # Examples:
-./.claude/skills/start-working/scripts/setup-workspace.sh feature user-auth github.com/org/repo
-./.claude/skills/start-working/scripts/setup-workspace.sh bugfix login-error github.com/org/repo main PROJ-123
+./.claude/skills/init-workspace/scripts/setup-workspace.sh feature user-auth github.com/org/repo
+./.claude/skills/init-workspace/scripts/setup-workspace.sh bugfix login-error github.com/org/repo main PROJ-123
 ```
 
 ## Managed Repository Types

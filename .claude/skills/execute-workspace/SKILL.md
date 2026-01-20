@@ -1,69 +1,19 @@
 ---
-name: start-working
-description: A skill to set up and manage a working directory for development tasks
+name: execute-workspace
+description: Execute tasks in an initialized workspace by working through TODO items
 ---
 
-# start-working
+# execute-workspace
 
 ## Overview
 
-This skill helps you set up a working environment and manage tasks systematically using an automated setup script.
+This skill helps you execute work in an already initialized workspace. It works through TODO items, delegates to sub-agents, and verifies completion.
+
+**Prerequisites:** The workspace must be initialized first using `/init-workspace`.
 
 ## Steps
 
-### 1. Understand the Task Requirements
-
-Before running the setup script, ensure you have:
-
-- Task type (feature, bugfix, research, etc.)
-- Brief description
-- Target repository path in org/repo format (e.g., github.com/sters/complex-ai-workspace)
-- Base branch (optional - will be auto-detected if not specified)
-- Ticket ID (optional)
-
-### 2. Run Setup Script
-
-Execute the setup script with the required parameters:
-
-```bash
-./.claude/skills/start-working/scripts/setup-workspace.sh <task-type> <description> <org/repo-name> [base-branch] [ticket-id]
-```
-
-**Examples:**
-
-```bash
-# Auto-detect base branch
-./.claude/skills/start-working/scripts/setup-workspace.sh feature user-auth github.com/sters/complex-ai-workspace
-
-# Specify base branch
-./.claude/skills/start-working/scripts/setup-workspace.sh feature user-auth github.com/sters/complex-ai-workspace main
-
-# With ticket ID
-./.claude/skills/start-working/scripts/setup-workspace.sh feature user-auth github.com/sters/complex-ai-workspace main PROJ-123
-
-# Bug fix with auto-detected branch
-./.claude/skills/start-working/scripts/setup-workspace.sh bugfix login-error github.com/sters/complex-ai-workspace
-
-# Research task with specific branch
-./.claude/skills/start-working/scripts/setup-workspace.sh research performance-analysis github.com/sters/complex-ai-workspace develop
-```
-
-The script will automatically:
-
-- Create a working directory with proper naming convention
-- Clone or update the target repository
-- Create a git worktree in the working directory
-- Generate README.md with task template
-- Generate `TODO-<repository-name>.md` with task-specific checklist
-
-### 3. Customize Documentation
-
-After setup completes:
-
-- Open the generated `README.md` and fill in task details
-- Review and customize `TODO-<repository-name>.md` checklist as needed
-
-### 4. Execute Work According to TODO
+### 1. Execute Work According to TODO
 
 - Work through `TODO-<repository-name>.md` checklist items sequentially
 - Check off items as you complete them
@@ -84,7 +34,7 @@ When the user provides additional requirements or requests changes during execut
 
 Note: The sub-agent operates autonomously on the TODO list and does not handle interactive user requests. User interactions should be handled by the main agent before delegation.
 
-### 5. Delegate to workspace-repo-todo-executor SubAgent
+### 2. Delegate to workspace-repo-todo-executor SubAgent
 
 Use the `workspace-repo-todo-executor` sub-agent to autonomously execute TODO items, run tests/linters, and commit changes.
 
@@ -118,7 +68,7 @@ Task tool:
 - Task is self-contained and well-defined
 - You need to maintain focus on high-level coordination
 
-### 6. Verification Before Completion
+### 3. Verification Before Completion
 
 Before considering the task complete:
 
