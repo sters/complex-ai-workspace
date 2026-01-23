@@ -159,6 +159,20 @@ Task tool:
 - Run tests and linters before completing work
 - Follow repository-specified methodology (TDD if not specified)
 
+## Language Policy
+
+**Communication with users**: Match the user's language. If the user writes in Japanese, respond in Japanese. If in English, respond in English.
+
+**External outputs (MUST be in English unless explicitly requested otherwise)**:
+- Git commit messages
+- Pull request titles and descriptions
+- Code comments
+- File contents (README.md, TODO files, review reports, etc.)
+- Branch names
+- Any content that will be stored in repositories or shared externally
+
+**Internal processing**: All skill definitions, agent prompts, and system configurations are written in English.
+
 ## Review Output
 
 Reviews are saved to `workspace/{task}/reviews/{timestamp}/`:
