@@ -9,6 +9,8 @@ description: Create a pull request following the repository's PR template
 
 This skill creates a pull request while respecting the repository's PR template. It ensures consistent PR formatting across all repositories.
 
+**Default behavior**: PRs are created as **draft** unless explicitly requested otherwise. This allows for additional review and CI checks before marking as ready for review.
+
 ## Prerequisites (Recommended)
 
 Before creating a PR, it's recommended to run a code review:
@@ -74,11 +76,13 @@ git diff origin/<base-branch>..HEAD --stat
 Use `gh pr create` with the template format:
 
 ```bash
-gh pr create --title "Title here" --body "$(cat <<'EOF'
+gh pr create --draft --title "Title here" --body "$(cat <<'EOF'
 <PR body following template format>
 EOF
 )"
 ```
+
+> **Note**: Always use `--draft` unless the user explicitly requests a non-draft PR.
 
 **If template exists**: Fill in all template sections appropriately.
 
@@ -116,7 +120,7 @@ git log origin/main..HEAD --oneline
 git diff origin/main..HEAD --stat
 
 # Step 4: Create PR (example with template sections)
-gh pr create --title "feat: Add user authentication" --body "$(cat <<'EOF'
+gh pr create --draft --title "feat: Add user authentication" --body "$(cat <<'EOF'
 ## Summary
 - Added JWT-based authentication
 - Implemented login/logout endpoints

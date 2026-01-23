@@ -68,6 +68,7 @@ Launches `review-workspace-repo-changes` agent for each repository:
 
 - Finds and follows the repository's PR template
 - Creates a well-formatted pull request with gh CLI
+- **Creates as draft by default** (unless explicitly requested otherwise)
 
 ## Directory Structure
 
