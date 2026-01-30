@@ -61,7 +61,15 @@ Task tool:
 
 **Important**: Launch agents in parallel if there are multiple repositories.
 
-### 4. Report Results
+### 4. Commit Workspace Snapshot
+
+After all agents complete, commit the workspace changes:
+
+```bash
+./.claude/scripts/commit-workspace-snapshot.sh workspace/{workspace-name}
+```
+
+### 5. Report Results
 
 After all agents complete, report the execution summary to the user:
 

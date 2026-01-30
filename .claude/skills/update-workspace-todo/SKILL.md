@@ -82,7 +82,15 @@ After updating, summarize what was changed:
 - Modified: "{old}" → "{new}"
 ```
 
-### 6. Suggest Next Steps
+### 6. Commit Workspace Snapshot
+
+After updating the TODO file, commit the changes:
+
+```bash
+./.claude/scripts/commit-workspace-snapshot.sh workspace/{workspace-name}
+```
+
+### 7. Suggest Next Steps
 
 If `workspace-repo-todo-executor` is not currently running, suggest executing the workspace:
 

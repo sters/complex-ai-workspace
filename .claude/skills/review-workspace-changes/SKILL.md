@@ -97,7 +97,15 @@ The agent will:
 2. Create `SUMMARY.md` in the review directory
 3. Return aggregated results for presenting to the user
 
-### 6. Present Summary to User
+### 6. Commit Workspace Snapshot
+
+After all reviews complete, commit the workspace changes (including review results):
+
+```bash
+./.claude/scripts/commit-workspace-snapshot.sh workspace/{workspace-name}
+```
+
+### 7. Present Summary to User
 
 Display a concise summary to the user.
 

@@ -110,7 +110,27 @@ echo "==> Creating tmp directory..."
 mkdir -p "$WORKING_DIR/tmp"
 echo "Created: $WORKING_DIR/tmp"
 
-# Step 5: Create README.md from template
+# Step 5: Initialize git repository for workspace tracking
+echo "==> Initializing git repository for workspace tracking..."
+cd "$WORKING_DIR"
+git init --quiet
+
+# Create .gitignore to exclude worktrees and tmp
+cat > .gitignore << 'GITIGNORE'
+# Exclude repository worktrees (they are separate git repos)
+github.com/
+gitlab.com/
+bitbucket.org/
+
+# Exclude temporary files
+tmp/
+*.tmp
+*.log
+GITIGNORE
+
+echo "Git repository initialized with .gitignore"
+
+# Step 6: Create README.md from template
 echo "==> Creating README.md..."
 sed -e "s/{{DESCRIPTION}}/${DESCRIPTION}/g" \
     -e "s/{{TASK_TYPE}}/${TASK_TYPE}/g" \
@@ -121,7 +141,7 @@ sed -e "s/{{DESCRIPTION}}/${DESCRIPTION}/g" \
     "$TEMPLATES_DIR/README.md" > "$WORKING_DIR/README.md"
 echo "Created: $WORKING_DIR/README.md"
 
-# Step 6: Create TODO-<repository-name>.md from template based on task type
+# Step 7: Create TODO-<repository-name>.md from template based on task type
 TODO_FILE="$WORKING_DIR/TODO-${REPOSITORY_NAME}.md"
 echo "==> Creating TODO-${REPOSITORY_NAME}.md..."
 case "$TASK_TYPE" in
@@ -140,6 +160,13 @@ case "$TASK_TYPE" in
 esac
 sed -e "s/{{REPOSITORY_NAME}}/${REPOSITORY_NAME}/g" "$TEMPLATE_FILE" > "$TODO_FILE"
 echo "Created: $TODO_FILE"
+
+# Step 8: Create initial git commit for workspace tracking
+echo "==> Creating initial git commit..."
+cd "$WORKING_DIR"
+git add .gitignore README.md "TODO-${REPOSITORY_NAME}.md"
+git commit --quiet -m "Initial: $WORKING_DIR_NAME workspace created"
+echo "Initial commit created"
 
 echo ""
 echo "==> Setup complete!"

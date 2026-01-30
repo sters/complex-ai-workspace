@@ -36,6 +36,7 @@ This is a multi-repository workspace manager for Claude Code. It enables complex
 | `/show-current-status` | Show TODO progress and background agent status |
 | `/delete-workspace` | Delete a workspace after confirmation |
 | `/prune-workspaces` | Delete stale workspaces not modified recently |
+| `/show-workspace-history` | Show git history of a workspace (README/TODO changes) |
 
 ## Primary Workflow
 
@@ -96,11 +97,15 @@ Launches `review-workspace-repo-changes` agent for each repository:
 ├── repositories/               # Cloned repos (git data source)
 └── workspace/                  # Active task directories (worktrees)
     └── {task-name}-{date}/
+        ├── .git/               # Workspace git repo (tracks README/TODO history)
+        ├── .gitignore          # Excludes worktrees (github.com/, etc.)
         ├── README.md           # Task context
         ├── TODO-{repo}.md      # Task checklist
         ├── reviews/            # Code review output
-        └── {org}/{repo}/       # Git worktree
+        └── {org}/{repo}/       # Git worktree (excluded from workspace git)
 ```
+
+Each workspace is a git repository that tracks README.md, TODO-*.md, and reviews/ changes. Use `/show-workspace-history` to view the history.
 
 ## Setup Script
 
