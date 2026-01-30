@@ -134,6 +134,30 @@ Assistant: I'll review the workspace/feature-login-fix-20260115 workspace...
 Review complete! All changes look good with 0 critical issues and 3 suggestions.
 ```
 
+## Next Steps - Ask User to Proceed
+
+After review is complete, **always ask the user** whether to proceed with the next step using AskUserQuestion:
+
+```yaml
+AskUserQuestion tool:
+  questions:
+    - question: "Code review complete. Would you like to create pull requests for the changes?"
+      header: "Next Step"
+      multiSelect: false
+      options:
+        - label: "Create PRs (draft)"
+          description: "Run /create-pr-workspace to create draft pull requests"
+        - label: "Create PRs (ready for review)"
+          description: "Create non-draft pull requests immediately"
+        - label: "Fix issues first"
+          description: "I need to address the review findings before creating PRs"
+```
+
+Based on the user's selection:
+- "Create PRs (draft)" → Invoke the `/create-pr-workspace` skill using the Skill tool (default draft mode)
+- "Create PRs (ready for review)" → Invoke the `/create-pr-workspace` skill with non-draft option
+- "Fix issues first" → End the workflow so user can address review findings
+
 ## Notes
 
 - The skill delegates actual review work to the `review-workspace-repo-changes` agent

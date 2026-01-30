@@ -100,6 +100,30 @@ Assistant: I'll execute the tasks in workspace/feature-user-auth-20260116...
 All TODO items completed. Tests passing, no lint errors.
 ```
 
+## Next Steps - Ask User to Proceed
+
+After execution is complete, **always ask the user** whether to proceed with the next step using AskUserQuestion:
+
+```yaml
+AskUserQuestion tool:
+  questions:
+    - question: "Task execution complete. Would you like to review the code changes before creating a PR?"
+      header: "Next Step"
+      multiSelect: false
+      options:
+        - label: "Review changes (Recommended)"
+          description: "Run /review-workspace-changes to check for issues before PR"
+        - label: "Skip review, create PR"
+          description: "Proceed directly to /create-pr-workspace"
+        - label: "Done for now"
+          description: "I'll continue manually later"
+```
+
+Based on the user's selection:
+- "Review changes" → Invoke the `/review-workspace-changes` skill using the Skill tool
+- "Skip review, create PR" → Invoke the `/create-pr-workspace` skill using the Skill tool
+- "Done for now" → End the workflow
+
 ## Notes
 
 - The skill delegates actual work to the `workspace-repo-todo-executor` agent

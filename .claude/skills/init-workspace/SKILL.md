@@ -91,13 +91,24 @@ User: Initialize workspace for feature X based on develop branch
 Assistant: [Runs setup script with BASE_BRANCH=develop]
 ```
 
-## Next Steps
+## Next Steps - Ask User to Proceed
 
-After initialization is complete, use `/execute-workspace` to:
-- Work through TODO items
-- Delegate to workspace-repo-todo-executor agent
-- Run tests and linters
-- Verify completion
+After initialization is complete, **always ask the user** whether to proceed with the next step using AskUserQuestion:
+
+```yaml
+AskUserQuestion tool:
+  questions:
+    - question: "Workspace initialization complete. Would you like to proceed with executing the TODO items?"
+      header: "Next Step"
+      multiSelect: false
+      options:
+        - label: "Execute now"
+          description: "Run /execute-workspace to work through TODO items immediately"
+        - label: "Skip for now"
+          description: "I'll review the workspace files first and execute later"
+```
+
+If the user selects "Execute now", invoke the `/execute-workspace` skill using the Skill tool.
 
 ## Notes
 
