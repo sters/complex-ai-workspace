@@ -87,7 +87,7 @@ After updating, summarize what was changed:
 After updating the TODO file, commit the changes:
 
 ```bash
-./.claude/scripts/commit-workspace-snapshot.sh workspace/{workspace-name}
+./.claude/scripts/commit-workspace-snapshot.sh {workspace-name}
 ```
 
 ### 7. Suggest Next Steps

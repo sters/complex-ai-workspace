@@ -66,7 +66,7 @@ Task tool:
 After all agents complete, commit the workspace changes:
 
 ```bash
-./.claude/scripts/commit-workspace-snapshot.sh workspace/{workspace-name}
+./.claude/scripts/commit-workspace-snapshot.sh {workspace-name}
 ```
 
 ### 5. Report Results

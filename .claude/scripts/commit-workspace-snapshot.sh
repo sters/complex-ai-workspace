@@ -2,39 +2,34 @@
 
 set -e
 
-# Usage: ./commit-workspace-snapshot.sh <workspace-path> [message]
-# Example: ./commit-workspace-snapshot.sh workspace/feature-auth-20260130
-# Example: ./commit-workspace-snapshot.sh workspace/feature-auth-20260130 "Custom message"
+# Usage: ./commit-workspace-snapshot.sh <workspace-name> [message]
+# Example: ./commit-workspace-snapshot.sh feature-auth-20260130
+# Example: ./commit-workspace-snapshot.sh feature-auth-20260130 "Custom message"
 #
 # Commits changes to README.md, TODO-*.md, and reviews/ in the workspace git repository.
 # Auto-generates commit message based on TODO progress if not provided.
 
-WORKSPACE_PATH="$1"
+WORKSPACE_NAME="$1"
 CUSTOM_MESSAGE="$2"
 
-if [ -z "$WORKSPACE_PATH" ]; then
-    echo "Usage: $0 <workspace-path> [message]"
-    echo "Example: $0 workspace/feature-auth-20260130"
+if [ -z "$WORKSPACE_NAME" ]; then
+    echo "Usage: $0 <workspace-name> [message]"
+    echo "Example: $0 feature-auth-20260130"
     exit 1
 fi
 
-# Resolve to absolute path
-if [[ "$WORKSPACE_PATH" != /* ]]; then
-    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    WORKSPACE_ROOT="$(cd "$SCRIPT_DIR/../../../.." && pwd)"
-    WORKSPACE_PATH="$WORKSPACE_ROOT/$WORKSPACE_PATH"
-fi
+WORKSPACE_DIR="workspace/${WORKSPACE_NAME}"
 
-if [ ! -d "$WORKSPACE_PATH" ]; then
-    echo "Error: Workspace directory not found: $WORKSPACE_PATH"
+if [ ! -d "$WORKSPACE_DIR" ]; then
+    echo "Error: Workspace directory not found: $WORKSPACE_DIR"
     exit 1
 fi
 
-cd "$WORKSPACE_PATH"
+cd "$WORKSPACE_DIR"
 
 # Check if workspace is a git repository
 if [ ! -d ".git" ]; then
-    echo "Error: Workspace is not a git repository: $WORKSPACE_PATH"
+    echo "Error: Workspace is not a git repository: $WORKSPACE_DIR"
     echo "Hint: Re-initialize the workspace or run git init manually"
     exit 1
 fi

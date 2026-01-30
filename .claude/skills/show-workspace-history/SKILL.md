@@ -21,13 +21,13 @@ This skill shows the git commit history of a workspace, displaying how README an
 Execute the following script:
 
 ```bash
-./.claude/skills/show-workspace-history/scripts/show-workspace-history.sh workspace/{workspace-name}
+./.claude/skills/show-workspace-history/scripts/show-workspace-history.sh {workspace-name}
 ```
 
 For detailed diff output, add `--full`:
 
 ```bash
-./.claude/skills/show-workspace-history/scripts/show-workspace-history.sh workspace/{workspace-name} --full
+./.claude/skills/show-workspace-history/scripts/show-workspace-history.sh {workspace-name} --full
 ```
 
 ### 3. Output

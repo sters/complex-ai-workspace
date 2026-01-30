@@ -2,35 +2,30 @@
 
 set -e
 
-# Usage: ./show-workspace-history.sh <workspace-path> [--full]
-# Example: ./show-workspace-history.sh workspace/feature-auth-20260130
-# Example: ./show-workspace-history.sh workspace/feature-auth-20260130 --full
+# Usage: ./show-workspace-history.sh <workspace-name> [--full]
+# Example: ./show-workspace-history.sh feature-auth-20260130
+# Example: ./show-workspace-history.sh feature-auth-20260130 --full
 #
 # Shows git history of the workspace (README/TODO changes over time).
 # Use --full to show detailed diff for each commit.
 
-WORKSPACE_PATH="$1"
+WORKSPACE_NAME="$1"
 SHOW_FULL="$2"
 
-if [ -z "$WORKSPACE_PATH" ]; then
-    echo "Usage: $0 <workspace-path> [--full]"
-    echo "Example: $0 workspace/feature-auth-20260130"
+if [ -z "$WORKSPACE_NAME" ]; then
+    echo "Usage: $0 <workspace-name> [--full]"
+    echo "Example: $0 feature-auth-20260130"
     exit 1
 fi
 
-# Resolve to absolute path
-if [[ "$WORKSPACE_PATH" != /* ]]; then
-    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    WORKSPACE_ROOT="$(cd "$SCRIPT_DIR/../../../.." && pwd)"
-    WORKSPACE_PATH="$WORKSPACE_ROOT/$WORKSPACE_PATH"
-fi
+WORKSPACE_DIR="workspace/${WORKSPACE_NAME}"
 
-if [ ! -d "$WORKSPACE_PATH" ]; then
-    echo "Error: Workspace directory not found: $WORKSPACE_PATH"
+if [ ! -d "$WORKSPACE_DIR" ]; then
+    echo "Error: Workspace directory not found: $WORKSPACE_DIR"
     exit 1
 fi
 
-cd "$WORKSPACE_PATH"
+cd "$WORKSPACE_DIR"
 
 # Check if workspace is a git repository
 if [ ! -d ".git" ]; then
@@ -39,7 +34,7 @@ if [ ! -d ".git" ]; then
     exit 1
 fi
 
-WORKSPACE_NAME=$(basename "$WORKSPACE_PATH")
+# WORKSPACE_NAME is already set from input
 echo "=== Workspace History: $WORKSPACE_NAME ==="
 echo ""
 

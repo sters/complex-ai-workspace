@@ -102,7 +102,7 @@ The agent will:
 After all reviews complete, commit the workspace changes (including review results):
 
 ```bash
-./.claude/scripts/commit-workspace-snapshot.sh workspace/{workspace-name}
+./.claude/scripts/commit-workspace-snapshot.sh {workspace-name}
 ```
 
 ### 7. Present Summary to User
