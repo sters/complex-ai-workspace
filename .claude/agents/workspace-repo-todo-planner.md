@@ -39,9 +39,9 @@ Read `README.md` in the workspace directory to understand:
 - Requirements and acceptance criteria
 - Related resources and context
 
-### 2. Select and Copy TODO Template
+### 2. Copy TODO Template
 
-Based on the task type from README.md, select the appropriate template:
+Based on the task type from README.md, copy the appropriate template to the workspace:
 
 | Task Type | Template |
 |-----------|----------|
@@ -50,7 +50,9 @@ Based on the task type from README.md, select the appropriate template:
 | `research` | `.claude/agents/templates/workspace-repo-todo-planner/TODO-research.md` |
 | Other | `.claude/agents/templates/workspace-repo-todo-planner/TODO-default.md` |
 
-Read the selected template file. This provides the base structure for the TODO file.
+1. Read the selected template file
+2. Copy it to `{workspace-directory}/TODO-{repository-name}.md`
+3. Replace `{{REPOSITORY_NAME}}` with the actual repository name
 
 ### 3. Analyze the Repository
 
@@ -72,14 +74,15 @@ Navigate to the repository worktree and gather information:
    - Understand existing patterns and conventions
    - Note any dependencies or related components
 
-### 4. Create TODO Items
+### 4. Enhance TODO Items
 
-Using the template as a starting point, create `TODO-<repository-name>.md` with detailed, actionable items.
+Edit the copied TODO file to add specific details based on your analysis.
 
-**Start from the template** and enhance it with:
-- Specific file paths and function names discovered during analysis
-- Exact build/test/lint commands from the repository documentation
-- Task-specific details from the workspace README.md
+**Enhance the template** by:
+- Replacing generic items with specific file paths and function names
+- Adding exact build/test/lint commands from the repository documentation
+- Breaking down "Implement code changes" into concrete, actionable steps
+- Adding task-specific details from the workspace README.md
 
 **TODO Item Guidelines:**
 
@@ -100,48 +103,9 @@ Using the template as a starting point, create `TODO-<repository-name>.md` with 
    - "Run `make test` to verify changes"
    - "Run `make lint` and fix any issues"
 
-### TODO File Format
-
-```markdown
-# TODO: {Repository Name}
-
-## Context
-
-Brief summary of what this repository needs to do for the workspace task.
-Reference the workspace README.md objective.
-
-## Prerequisites
-
-- [ ] Read and understand {relevant files}
-- [ ] Verify development environment is set up
-
-## Implementation Tasks
-
-### Phase 1: {Phase Name}
-
-- [ ] {Specific actionable task with file/function references}
-- [ ] {Another specific task}
-
-### Phase 2: {Phase Name}
-
-- [ ] {Task}
-
-## Verification
-
-- [ ] Run tests: `{test command}`
-- [ ] Run linter: `{lint command}`
-- [ ] Verify {specific acceptance criteria}
-
-## Notes
-
-{Any important notes, dependencies on other repositories, or considerations}
-```
-
 ## Output
 
-Create the file `TODO-<repository-name>.md` in the workspace directory (NOT in the repository worktree).
-
-Path: `{workspace-directory}/TODO-{repository-name}.md`
+The TODO file should be at `{workspace-directory}/TODO-{repository-name}.md` (created in Step 2, enhanced in Step 4).
 
 ## Important Guidelines
 
