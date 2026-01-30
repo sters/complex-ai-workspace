@@ -8,7 +8,19 @@ A multi-repository workspace manager for Claude Code. This tool provides Claude 
 2. Open with `claude` command (Claude Code CLI)
 3. Initialize a workspace:
    ```
-   /workspace-init feature user-auth github.com/org/repo
+   /workspace-init Add user authentication feature to github.com/org/repo
+   ```
+
+   More examples:
+   ```
+   # With Jira ticket
+   /workspace-init PROJ-123 Fix login timeout issue in github.com/org/api
+
+   # Multiple repositories
+   /workspace-init Add product ID to cart API involving github.com/org/proto and github.com/org/api
+
+   # Research task
+   /workspace-init Investigate performance bottleneck in github.com/org/backend
    ```
 4. Execute the tasks:
    ```
