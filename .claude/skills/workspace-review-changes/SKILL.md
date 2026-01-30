@@ -20,7 +20,7 @@ First, determine which workspace to review:
 - List available workspaces if needed:
 
 ```bash
-ls -d workspace/*/
+./.claude/scripts/list-workspaces.sh
 ```
 
 ### 2. Identify Repositories to Review
@@ -28,8 +28,7 @@ ls -d workspace/*/
 Find all repository worktrees in the workspace:
 
 ```bash
-# List all directories in the workspace (excluding README and TODO files)
-ls -d workspace/{workspace-name}/*/
+./.claude/scripts/list-workspace-repos.sh {workspace-name}
 ```
 
 Common patterns:

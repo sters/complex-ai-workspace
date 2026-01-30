@@ -17,7 +17,7 @@ This skill safely deletes a workspace by first showing its status and confirming
 - If not specified, list available workspaces and ask:
 
 ```bash
-ls -d workspace/*/
+./.claude/scripts/list-workspaces.sh
 ```
 
 ### 2. Check Workspace Status

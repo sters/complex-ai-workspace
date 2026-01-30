@@ -16,7 +16,7 @@ This skill lists all existing workspaces in the `workspace/` directory using a s
 Execute the following script:
 
 ```bash
-./.claude/skills/workspace-list/scripts/list-workspaces.sh
+./.claude/scripts/list-workspaces.sh
 ```
 
 ### 2. Output

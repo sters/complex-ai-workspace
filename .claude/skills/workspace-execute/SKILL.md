@@ -20,7 +20,7 @@ This skill executes work in an initialized workspace by delegating to the `works
 - List available workspaces if needed:
 
 ```bash
-ls -d workspace/*/
+./.claude/scripts/list-workspaces.sh
 ```
 
 ### 2. Identify Repositories
@@ -28,7 +28,7 @@ ls -d workspace/*/
 Find all repository worktrees in the workspace:
 
 ```bash
-ls -d workspace/{workspace-name}/*/
+./.claude/scripts/list-workspace-repos.sh {workspace-name}
 ```
 
 For each repository directory, extract:

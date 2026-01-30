@@ -18,10 +18,10 @@ This skill updates TODO items in a workspace's TODO file. It supports adding, re
 
 ```bash
 # List workspaces
-ls -d workspace/*/
+./.claude/scripts/list-workspaces.sh
 
 # List TODO files in a workspace
-ls workspace/{workspace-name}/TODO-*.md
+./.claude/scripts/list-workspace-todos.sh {workspace-name}
 ```
 
 ### 2. Understand the Update Request
