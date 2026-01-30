@@ -11,15 +11,13 @@ This skill displays the current workspace status including TODO progress and bac
 
 ## Steps
 
-### 1. Identify Current Workspace from Context
+### 1. Workspace
 
-Review the current conversation to determine which workspace is being worked on. Look for:
+**Required**: User must specify the workspace.
 
-- Workspace initialized via `/workspace-init`
-- Workspace specified in `/workspace-execute`, `/workspace-review-changes`, or `/workspace-create-pr`
-- Any explicit workspace directory mentioned by the user
-
-If no workspace is focused, output "No workspace focused" and stop.
+- If workspace is **not specified**, abort with message:
+  > Please specify a workspace. Example: `/workspace-show-status workspace/feature-user-auth-20260116`
+- Workspace format: `workspace/{workspace-name}` or just `{workspace-name}`
 
 ### 2. Check TODO Progress
 
