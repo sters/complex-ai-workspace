@@ -34,7 +34,9 @@ Tasks are executed in isolated directories (`./workspace/{task-name}-{date}/`) u
 | `/create-pr-workspace` | Create PRs for all repositories (draft by default) |
 | `/update-workspace-todo` | Update TODO items in a workspace repository |
 | `/show-current-workspace` | Show the currently focused workspace |
+| `/show-workspaces` | List all workspaces in the workspace directory |
 | `/show-current-status` | Show TODO progress and background agent status |
 | `/delete-workspace` | Delete a workspace after confirmation |
+| `/prune-workspaces` | Delete stale workspaces not modified recently |
 
 See [CLAUDE.md](./CLAUDE.md) for detailed documentation.

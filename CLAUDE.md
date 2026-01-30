@@ -32,8 +32,10 @@ This is a multi-repository workspace manager for Claude Code. It enables complex
 | `/create-pr-workspace` | Create PRs for all repositories (draft by default) |
 | `/update-workspace-todo` | Update TODO items in a workspace repository |
 | `/show-current-workspace` | Show the currently focused workspace |
+| `/show-workspaces` | List all workspaces in the workspace directory |
 | `/show-current-status` | Show TODO progress and background agent status |
 | `/delete-workspace` | Delete a workspace after confirmation |
+| `/prune-workspaces` | Delete stale workspaces not modified recently |
 
 ## Primary Workflow
 
