@@ -22,6 +22,19 @@ This is a multi-repository workspace manager for Claude Code. It enables complex
 /create-pr-workspace
 ```
 
+## Available Skills
+
+| Skill | Description |
+|-------|-------------|
+| `/init-workspace` | Initialize workspace with worktree, README, and TODO files |
+| `/execute-workspace` | Execute TODO items via workspace-repo-todo-executor agent |
+| `/review-workspace-changes` | Review code changes via review-workspace-repo-changes agent |
+| `/create-pr-workspace` | Create PRs for all repositories (draft by default) |
+| `/update-workspace-todo` | Update TODO items in a workspace repository |
+| `/show-current-workspace` | Show the currently focused workspace |
+| `/show-current-status` | Show TODO progress and background agent status |
+| `/delete-workspace` | Delete a workspace after confirmation |
+
 ## Primary Workflow
 
 ### 1. Initialize Workspace
@@ -70,24 +83,13 @@ Launches `review-workspace-repo-changes` agent for each repository:
 - Creates a well-formatted pull request with gh CLI
 - **Creates as draft by default** (unless explicitly requested otherwise)
 
-### Additional Skills
-
-- `/update-workspace-todo` - Update TODO items in a workspace repository
-- `/delete-workspace` - Delete a workspace after confirmation
-
 ## Directory Structure
 
 ```
 .
 ├── .claude/
-│   ├── agents/                 # Sub-agent definitions
-│   │   ├── workspace-repo-todo-executor.md
-│   │   └── review-workspace-repo-changes.md
+│   ├── agents/                 # Sub-agent definitions (workspace-repo-todo-executor, review-workspace-repo-changes, etc.)
 │   ├── skills/                 # User-invokable skills
-│   │   ├── init-workspace/     # Workspace initialization
-│   │   ├── execute-workspace/  # Task execution
-│   │   ├── create-pr/          # PR creation with template
-│   │   └── review-workspace-changes/
 │   └── settings.local.json     # Allowed bash commands
 ├── repositories/               # Cloned repos (git data source)
 └── workspace/                  # Active task directories (worktrees)
