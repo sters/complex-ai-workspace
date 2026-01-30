@@ -19,7 +19,7 @@ This is a multi-repository workspace manager for Claude Code. It enables complex
 /review-workspace-changes
 
 # 4. Create pull request
-/create-pr
+/create-pr-workspace
 ```
 
 ## Primary Workflow
@@ -63,12 +63,17 @@ Launches `review-workspace-repo-changes` agent for each repository:
 ### 4. Create Pull Request
 
 ```
-/create-pr
+/create-pr-workspace
 ```
 
 - Finds and follows the repository's PR template
 - Creates a well-formatted pull request with gh CLI
 - **Creates as draft by default** (unless explicitly requested otherwise)
+
+### Additional Skills
+
+- `/update-workspace-todo` - Update TODO items in a workspace repository
+- `/delete-workspace` - Delete a workspace after confirmation
 
 ## Directory Structure
 

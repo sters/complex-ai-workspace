@@ -53,12 +53,10 @@ echo "Created: $WORKING_DIR"
 
 # Step 2: Update repository
 if [ ! -d "$REPOSITORY_PATH" ]; then
-    echo "==> Repository not found. Please provide repository URL to clone:"
-    read -r REPO_URL
-    if [ -z "$REPO_URL" ]; then
-        echo "Error: Repository URL is required"
-        exit 1
-    fi
+    echo "==> Repository not found. Cloning from $REPOSITORY_PATH_INPUT..."
+    # Generate clone URL from repository path (e.g., github.com/org/repo -> https://github.com/org/repo.git)
+    REPO_URL="https://${REPOSITORY_PATH_INPUT}.git"
+    echo "Clone URL: $REPO_URL"
     # Create parent directory structure
     mkdir -p "$(dirname "$REPOSITORY_PATH")"
     git clone "$REPO_URL" "$REPOSITORY_PATH"
