@@ -7,7 +7,7 @@ description: Create pull requests for all repositories in a workspace
 
 ## Overview
 
-This skill creates pull requests for all repositories in a workspace by delegating to the `create-pr` agent for each repository.
+This skill creates pull requests for all repositories in a workspace by delegating to the `workspace-repo-create-pr` agent for each repository.
 
 **Default behavior**: PRs are created as **draft** unless explicitly requested otherwise.
 
@@ -39,13 +39,13 @@ Find all repository worktrees in the workspace:
 ls -d workspace/{workspace-name}/*/
 ```
 
-### 3. Delegate to create-pr Agent for Each Repository
+### 3. Delegate to workspace-repo-create-pr Agent for Each Repository
 
-For each repository in the workspace, use the Task tool to launch the `create-pr` agent:
+For each repository in the workspace, use the Task tool to launch the `workspace-repo-create-pr` agent:
 
 ```yaml
 Task tool:
-  subagent_type: create-pr
+  subagent_type: workspace-repo-create-pr
   run_in_background: true
   prompt: |
     Create a pull request for the repository.
@@ -69,7 +69,7 @@ After all agents complete, report the created PR URLs to the user.
 ```
 User: Create PRs for my workspace
 Assistant: Let me identify the workspace and create PRs...
-[Identifies repositories, launches create-pr agents]
+[Identifies repositories, launches workspace-repo-create-pr agents]
 [After completion]
 PRs created:
 - https://github.com/org/repo1/pull/123 (draft)

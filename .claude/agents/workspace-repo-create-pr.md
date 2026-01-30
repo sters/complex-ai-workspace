@@ -1,7 +1,7 @@
 ---
-name: create-pr
+name: workspace-repo-create-pr
 description: |
-  Use this agent to create a pull request for a single repository.
+  Use this agent to create a pull request for a single repository within a workspace.
   This agent finds and respects the repository's PR template, gathers change information, and creates the PR.
 tools:
   - Read
@@ -9,7 +9,7 @@ tools:
   - Bash
 ---
 
-# Create PR Agent
+# Workspace Repository Create PR Agent
 
 You are a specialized agent for creating a pull request for a single repository.
 
@@ -28,10 +28,10 @@ When invoked, you will receive:
 Run the script to find and read the PR template:
 
 ```bash
-.claude/agents/scripts/create-pr/read-pr-template.sh <repository-worktree-path>
+.claude/agents/scripts/workspace-repo-create-pr/read-pr-template.sh <repository-worktree-path>
 ```
 
-The script searches for repository PR templates. If none found, it returns the default template from `.claude/agents/templates/create-pr/default-pr-template.md`.
+The script searches for repository PR templates. If none found, it returns the default template from `.claude/agents/templates/workspace-repo-create-pr/default-pr-template.md`.
 
 ### 2. Gather Change Information
 
@@ -64,17 +64,17 @@ Run the script to create the PR:
 
 ```bash
 # Draft PR (default)
-.claude/agents/scripts/create-pr/create-pr.sh <repository-worktree-path> "<title>" workspace/{workspace-name}/tmp/pr-body-{repo-name}.md
+.claude/agents/scripts/workspace-repo-create-pr/create-pr.sh <repository-worktree-path> "<title>" workspace/{workspace-name}/tmp/pr-body-{repo-name}.md
 
 # Non-draft PR (only if explicitly requested)
-.claude/agents/scripts/create-pr/create-pr.sh <repository-worktree-path> "<title>" workspace/{workspace-name}/tmp/pr-body-{repo-name}.md --no-draft
+.claude/agents/scripts/workspace-repo-create-pr/create-pr.sh <repository-worktree-path> "<title>" workspace/{workspace-name}/tmp/pr-body-{repo-name}.md --no-draft
 ```
 
 ### 6. Return Results
 
 Return the PR URL and a brief summary.
 
-Refer to `.claude/agents/templates/create-pr/pr-created.md` for the format and fill in all placeholders.
+Refer to `.claude/agents/templates/workspace-repo-create-pr/pr-created.md` for the format and fill in all placeholders.
 
 ## Guidelines
 
