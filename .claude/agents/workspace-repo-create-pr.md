@@ -23,7 +23,21 @@ When invoked, you will receive:
 
 ## Execution Steps
 
-### 1. Read PR Template
+### 1. Check for Existing PR
+
+First, check if a PR already exists for the current branch:
+
+```bash
+.claude/agents/scripts/workspace-repo-create-pr/check-existing-pr.sh <repository-worktree-path>
+```
+
+Output:
+- First line: `exists` or `none`
+- Second line (if exists): PR URL
+
+**If a PR already exists**: Report the existing PR URL and stop. Do not create a duplicate PR.
+
+### 2. Read PR Template
 
 Run the script to find and read the PR template:
 
@@ -33,7 +47,7 @@ Run the script to find and read the PR template:
 
 The script searches for repository PR templates. If none found, it returns the default template from `.claude/agents/templates/workspace-repo-create-pr/default-pr-template.md`.
 
-### 2. Gather Change Information
+### 3. Gather Change Information
 
 Run the script to gather commit and file change information:
 
@@ -47,18 +61,18 @@ Output includes:
 - Diff statistics
 - Commit log
 
-### 3. Compose PR Content
+### 4. Compose PR Content
 
 Based on the template and change information:
 
 1. Create a concise title (under 70 characters)
 2. Write the PR body following the template structure
 
-### 4. Write PR Body to Temp File
+### 5. Write PR Body to Temp File
 
 Write the composed PR body to a temporary file in the workspace: `workspace/{workspace-name}/tmp/pr-body-{repo-name}.md`
 
-### 5. Create the Pull Request
+### 6. Create the Pull Request
 
 Run the script to create the PR:
 
