@@ -21,19 +21,22 @@ fi
 
 cd "$REPO_PATH"
 
-# Search for PR template (case-insensitive)
+# Search for PR template (direct file check is faster than find)
 # Priority: .github > docs > root
-TEMPLATE=$(find . -maxdepth 3 \( \
-    -ipath "./.github/pull_request_template.md" -o \
-    -ipath "./.github/pull_request_template/default.md" -o \
-    -ipath "./docs/pull_request_template.md" -o \
-    -ipath "./pull_request_template.md" \
-    \) -type f 2>/dev/null | head -1)
-
-if [ -n "$TEMPLATE" ]; then
-    cat "$TEMPLATE"
-    exit 0
-fi
+for template in \
+    ".github/PULL_REQUEST_TEMPLATE.md" \
+    ".github/pull_request_template.md" \
+    ".github/PULL_REQUEST_TEMPLATE/default.md" \
+    ".github/pull_request_template/default.md" \
+    "docs/PULL_REQUEST_TEMPLATE.md" \
+    "docs/pull_request_template.md" \
+    "PULL_REQUEST_TEMPLATE.md" \
+    "pull_request_template.md"; do
+    if [ -f "$template" ]; then
+        cat "$template"
+        exit 0
+    fi
+done
 
 # No template found, use default
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"

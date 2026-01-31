@@ -38,14 +38,11 @@ fi
 echo "=== Workspace History: $WORKSPACE_NAME ==="
 echo ""
 
-# Show current TODO status
+# Show current TODO status (awk processes each file in one pass)
 echo "--- Current Status ---"
 for TODO_FILE in TODO-*.md; do
     if [ -f "$TODO_FILE" ]; then
-        INCOMPLETE=$(grep -c '^\s*- \[ \]' "$TODO_FILE" 2>/dev/null) || INCOMPLETE=0
-        COMPLETE=$(grep -c '^\s*- \[x\]' "$TODO_FILE" 2>/dev/null) || COMPLETE=0
-        TOTAL=$((INCOMPLETE + COMPLETE))
-        echo "$TODO_FILE: ${COMPLETE}/${TOTAL} completed"
+        awk '/^[[:space:]]*- \[x\]/{c++} /^[[:space:]]*- \[ \]/{i++} END{print FILENAME": "c+0"/"(c+i)+0" completed"}' "$TODO_FILE"
     fi
 done
 echo ""

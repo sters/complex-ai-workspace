@@ -8,10 +8,11 @@ description: Initialize a working directory for development tasks
 ## Overview
 
 This skill initializes a working environment for development tasks. It orchestrates:
-1. Directory and worktree setup (via shell script)
-2. README creation with task details
-3. TODO planning for each repository (via workspace-repo-todo-planner agent)
-4. Cross-repository coordination (via workspace-todo-coordinator agent)
+1. Workspace directory setup (via `setup-workspace.sh`)
+2. Repository addition with worktrees (via `setup-repository.sh`)
+3. README creation with task details
+4. TODO planning for each repository (via workspace-repo-todo-planner agent)
+5. Cross-repository coordination (via workspace-todo-coordinator agent)
 
 **After initialization:** Use `/workspace-execute` to work through TODO items and complete the task.
 
@@ -19,7 +20,7 @@ This skill initializes a working environment for development tasks. It orchestra
 
 ### 1. Understand the Task Requirements
 
-Before running the setup script, ensure you have:
+Before running the setup scripts, ensure you have:
 
 - Task type (feature, bugfix, research, etc.)
 - Brief description
@@ -28,36 +29,92 @@ Before running the setup script, ensure you have:
 
 **Note:** Base branch is automatically detected from the remote default (main/master). You don't need to specify it.
 
-### 2. Run Setup Script (for each repository)
+### 2. Run Setup Scripts
 
-Execute the setup script with the required parameters:
+#### Step 2a: Create Workspace
+
+Execute the workspace setup script:
 
 ```bash
-./.claude/skills/workspace-init/scripts/setup-workspace.sh <task-type> <description> <org/repo-name> [ticket-id]
+./.claude/skills/workspace-init/scripts/setup-workspace.sh <task-type> <description> [ticket-id]
 ```
 
 **Examples:**
 
 ```bash
-# Basic usage - base branch is auto-detected
-./.claude/skills/workspace-init/scripts/setup-workspace.sh feature user-auth github.com/sters/complex-ai-workspace
+# Basic usage
+./.claude/skills/workspace-init/scripts/setup-workspace.sh feature user-auth
 
 # With ticket ID
-./.claude/skills/workspace-init/scripts/setup-workspace.sh feature user-auth github.com/sters/complex-ai-workspace PROJ-123
-
-# Bug fix
-./.claude/skills/workspace-init/scripts/setup-workspace.sh bugfix login-error github.com/sters/complex-ai-workspace
-
-# Override base branch - use when the user explicitly specifies a branch
-BASE_BRANCH=develop ./.claude/skills/workspace-init/scripts/setup-workspace.sh feature user-auth github.com/sters/complex-ai-workspace
+./.claude/skills/workspace-init/scripts/setup-workspace.sh bugfix login-error PROJ-123
 ```
 
-The script will automatically:
-
+The script will:
 - Create a working directory with proper naming convention
+- Initialize git repository with `.gitignore`
+- Create `tmp/` directory
+- Generate README.md from template
+- Create initial commit
+
+#### Step 2b: Fill in README.md Repositories Section
+
+Before adding repositories, update the `## Repositories` section in README.md with the list of repositories:
+
+```markdown
+## Repositories
+
+- **repo1**: `github.com/org/repo1` (base: `main`)
+- **repo2**: `github.com/org/repo2` (base: `main`)
+```
+
+**Important:** This must be done before running `setup-repository.sh` to allow parallel execution.
+
+#### Step 2c: Add Repositories (run in parallel)
+
+For each repository, execute the repository setup script using the Bash tool.
+
+**IMPORTANT:** When there are multiple repositories, call multiple Bash tools in a single message to run them in parallel.
+
+```bash
+./.claude/skills/workspace-init/scripts/setup-repository.sh <workspace-name> <org/repo-path>
+```
+
+**Single repository:**
+
+```yaml
+Bash tool:
+  command: ./.claude/skills/workspace-init/scripts/setup-repository.sh feature-user-auth-20260131 github.com/org/repo
+```
+
+**Multiple repositories (parallel execution):**
+
+Call multiple Bash tools in a single message:
+
+```yaml
+# First Bash tool call
+Bash tool:
+  command: ./.claude/skills/workspace-init/scripts/setup-repository.sh feature-user-auth-20260131 github.com/org/repo1
+
+# Second Bash tool call (in same message)
+Bash tool:
+  command: ./.claude/skills/workspace-init/scripts/setup-repository.sh feature-user-auth-20260131 github.com/org/repo2
+
+# Third Bash tool call (in same message)
+Bash tool:
+  command: ./.claude/skills/workspace-init/scripts/setup-repository.sh feature-user-auth-20260131 github.com/org/repo3
+```
+
+**Override base branch** (when user explicitly specifies):
+
+```yaml
+Bash tool:
+  command: BASE_BRANCH=develop ./.claude/skills/workspace-init/scripts/setup-repository.sh feature-user-auth-20260131 github.com/org/repo
+```
+
+The script will:
 - Clone or update the target repository
+- Detect the base branch (auto or from BASE_BRANCH env)
 - Create a git worktree in the working directory
-- Generate README.md with task template
 
 ### 3. Fill in README.md
 
@@ -128,10 +185,12 @@ After coordination completes, commit the TODO files:
 User: Initialize a workspace for user authentication feature in github.com/org/repo
 Assistant:
   1. [Runs setup-workspace.sh] → Creates workspace/feature-user-auth-20260116
-  2. [Fills in README.md with task details]
-  3. [Calls workspace-repo-todo-planner] → Creates TODO-repo.md
-  4. [Calls workspace-todo-coordinator] → Optimizes (single repo, minimal changes)
-  5. Done!
+  2. [Fills in README.md Repositories section]
+  3. [Runs setup-repository.sh] → Adds repo with worktree
+  4. [Fills in README.md with task details (Objective, Context, etc.)]
+  5. [Calls workspace-repo-todo-planner] → Creates TODO-repo.md
+  6. [Calls workspace-todo-coordinator] → Optimizes (single repo, minimal changes)
+  7. Done!
 ```
 
 ### Example 2: Multiple Repositories
@@ -142,16 +201,18 @@ User: Initialize a workspace for adding product IDs to cart, involving:
       - github.com/org/api (API implementation)
       - github.com/org/frontend (UI)
 Assistant:
-  1. [Runs setup-workspace.sh x3] → Creates workspace with 3 worktrees
-  2. [Fills in README.md with task details]
-  3. [Calls workspace-repo-todo-planner x3 in parallel]
+  1. [Runs setup-workspace.sh] → Creates workspace/feature-product-ids-20260116
+  2. [Fills in README.md Repositories section with all 3 repos]
+  3. [Calls 3 Bash tools in single message for setup-repository.sh] → Adds 3 repos with worktrees in parallel
+  4. [Fills in README.md with task details (Objective, Context, etc.)]
+  5. [Calls 3 Task tools in single message for workspace-repo-todo-planner] → Creates TODO files in parallel
      - proto planner → TODO-proto.md
      - api planner → TODO-api.md
      - frontend planner → TODO-frontend.md
-  4. [Calls workspace-todo-coordinator]
+  6. [Calls workspace-todo-coordinator]
      - Identifies: proto → api → frontend dependency chain
      - Restructures TODOs to allow parallel work with stubs
-  5. Done!
+  7. Done!
 ```
 
 ## Next Steps - Ask User to Proceed
@@ -175,7 +236,10 @@ If the user selects "Execute now", invoke the `/workspace-execute` skill using t
 
 ## Notes
 
-- Base branch is auto-detected from remote default unless explicitly specified
-- The setup script creates README.md from template; TODO files are created by planner agents
+- Base branch is auto-detected from remote default unless explicitly specified via BASE_BRANCH env
+- `setup-workspace.sh` creates the workspace directory and README.md template
+- `setup-repository.sh` clones/updates repos and creates worktrees; call multiple Bash tools in single message for parallel execution
+- **Fill in README.md Repositories section before running `setup-repository.sh`** to enable parallel execution
+- TODO files are created by planner agents, not by the setup scripts
 - Workspace naming convention: `{task-type}-{ticket-id}-{description}-{date}` or `{task-type}-{description}-{date}`
 - For single repository workspaces, the coordinator step is still run but makes minimal changes

@@ -33,11 +33,8 @@ git diff --name-status "origin/${BASE_BRANCH}...HEAD" 2>/dev/null || echo "(no c
 
 echo ""
 echo "=== DIFF STAT ==="
+# --stat includes summary line, so --shortstat is redundant
 git diff --stat "origin/${BASE_BRANCH}...HEAD" 2>/dev/null || echo "(no changes)"
-
-echo ""
-echo "=== DIFF SUMMARY ==="
-git diff --shortstat "origin/${BASE_BRANCH}...HEAD" 2>/dev/null || echo "(no changes)"
 
 echo ""
 echo "=== COMMIT LOG ==="

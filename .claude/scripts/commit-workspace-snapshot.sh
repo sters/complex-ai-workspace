@@ -54,19 +54,10 @@ fi
 
 # Generate commit message if not provided
 if [ -z "$CUSTOM_MESSAGE" ]; then
-    # Count TODO items
-    TOTAL_ITEMS=0
-    COMPLETED_ITEMS=0
-
-    for TODO_FILE in TODO-*.md; do
-        if [ -f "$TODO_FILE" ]; then
-            # Count lines matching "- [ ]" (incomplete) and "- [x]" (complete)
-            INCOMPLETE=$(grep -c '^\s*- \[ \]' "$TODO_FILE" 2>/dev/null) || INCOMPLETE=0
-            COMPLETE=$(grep -c '^\s*- \[x\]' "$TODO_FILE" 2>/dev/null) || COMPLETE=0
-            TOTAL_ITEMS=$((TOTAL_ITEMS + INCOMPLETE + COMPLETE))
-            COMPLETED_ITEMS=$((COMPLETED_ITEMS + COMPLETE))
-        fi
-    done
+    # Count TODO items across all files at once (faster than per-file loop)
+    INCOMPLETE=$(grep -ch '^\s*- \[ \]' TODO-*.md 2>/dev/null | awk '{s+=$1} END {print s+0}') || INCOMPLETE=0
+    COMPLETED_ITEMS=$(grep -ch '^\s*- \[x\]' TODO-*.md 2>/dev/null | awk '{s+=$1} END {print s+0}') || COMPLETED_ITEMS=0
+    TOTAL_ITEMS=$((INCOMPLETE + COMPLETED_ITEMS))
 
     # Check if reviews were added/updated
     REVIEWS_CHANGED=""

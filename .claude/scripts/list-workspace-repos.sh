@@ -21,9 +21,7 @@ if [[ ! -d "$WORKSPACE_PATH" ]]; then
 fi
 
 # Find repository directories (directories containing .git or are git worktrees)
-# Exclude hidden directories and known non-repo directories
-find "$WORKSPACE_PATH" -mindepth 2 -maxdepth 4 -type d -name ".git" 2>/dev/null | while read -r gitdir; do
-    repo_path="$(dirname "$gitdir")"
-    # Output relative path from workspace
-    echo "${repo_path#$WORKSPACE_PATH/}"
-done | sort
+# Note: .git is a directory for regular repos, but a file for worktrees
+# Use sed to strip /.git suffix and workspace prefix (faster than while loop + dirname)
+find "$WORKSPACE_PATH" -mindepth 2 -maxdepth 4 -name ".git" 2>/dev/null | \
+    sed 's|/\.git$||' | sed "s|^$WORKSPACE_PATH/||" | sort

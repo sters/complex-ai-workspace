@@ -5,8 +5,10 @@
 **Task Type**: {{TASK_TYPE}}
 **Ticket ID**: {{TICKET_ID}}
 **Date**: {{DATE}}
-**Target Repository**: {{REPOSITORY_NAME}}
-**Base Branch**: {{BASE_BRANCH}}
+
+## Repositories
+
+<!-- Fill in before running setup-repository.sh -->
 
 ## Objective
 

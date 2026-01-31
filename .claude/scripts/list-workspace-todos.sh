@@ -20,9 +20,5 @@ if [[ ! -d "$WORKSPACE_PATH" ]]; then
     exit 1
 fi
 
-# Find TODO-*.md files in the workspace root
-for todo_file in "$WORKSPACE_PATH"/TODO-*.md; do
-    if [[ -f "$todo_file" ]]; then
-        echo "$(basename "$todo_file")"
-    fi
-done | sort
+# Find TODO-*.md files in the workspace root (ls + sed faster than loop + basename)
+ls -1 "$WORKSPACE_PATH"/TODO-*.md 2>/dev/null | sed 's|.*/||' | sort

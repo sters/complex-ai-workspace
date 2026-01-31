@@ -31,10 +31,21 @@ TOTAL_INCOMPLETE=0
 for TODO_FILE in "$WORKSPACE_DIR"/TODO-*.md; do
     if [ -f "$TODO_FILE" ]; then
         FILENAME=$(basename "$TODO_FILE")
-        COMPLETED=$(grep -c '^\s*- \[x\]' "$TODO_FILE" 2>/dev/null || echo "0")
-        INCOMPLETE=$(grep -c '^\s*- \[ \]' "$TODO_FILE" 2>/dev/null || echo "0")
-        TOTAL=$((COMPLETED + INCOMPLETE))
 
+        # Use awk to count and collect incomplete items in one pass
+        eval "$(awk '
+            /^[[:space:]]*- \[x\]/ { completed++ }
+            /^[[:space:]]*- \[ \]/ {
+                incomplete++
+                if (incomplete <= 5) items[incomplete] = $0
+            }
+            END {
+                print "COMPLETED=" completed+0
+                print "INCOMPLETE=" incomplete+0
+            }
+        ' "$TODO_FILE")"
+
+        TOTAL=$((COMPLETED + INCOMPLETE))
         TOTAL_COMPLETED=$((TOTAL_COMPLETED + COMPLETED))
         TOTAL_INCOMPLETE=$((TOTAL_INCOMPLETE + INCOMPLETE))
 
@@ -52,10 +63,11 @@ for TODO_FILE in "$WORKSPACE_DIR"/TODO-*.md; do
         if [ "$INCOMPLETE" -gt 0 ]; then
             echo ""
             echo "Incomplete items:"
+            # Re-read for display (only when needed)
             if [ "$INCOMPLETE" -le 5 ]; then
-                grep '^\s*- \[ \]' "$TODO_FILE" 2>/dev/null || true
+                grep '^[[:space:]]*- \[ \]' "$TODO_FILE" 2>/dev/null || true
             else
-                grep '^\s*- \[ \]' "$TODO_FILE" 2>/dev/null | head -5 || true
+                grep '^[[:space:]]*- \[ \]' "$TODO_FILE" 2>/dev/null | head -5 || true
                 echo "  ... and $((INCOMPLETE - 5)) more"
             fi
         fi

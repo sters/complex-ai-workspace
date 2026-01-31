@@ -19,9 +19,8 @@ if [[ -z "$stale" ]]; then
     exit 0
 fi
 
-while IFS= read -r ws; do
-    ws_name=$(basename "$ws")
-    mtime=$(stat -f "%m" "$ws" 2>/dev/null)
-    last_date=$(date -r "$mtime" "+%Y-%m-%d" 2>/dev/null || echo "Unknown")
-    echo "workspace/$ws_name/ ($last_date)"
-done <<< "$stale"
+# Process all at once: get mtime and format output (faster than per-item stat)
+echo "$stale" | while IFS= read -r ws; do
+    # Use stat -f to get mtime and format in one call
+    stat -f "workspace/%N/ (%Sm)" -t "%Y-%m-%d" "$ws" 2>/dev/null | sed 's|.*/\([^/]*\)/ |\1/ |'
+done

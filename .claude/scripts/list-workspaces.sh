@@ -17,6 +17,5 @@ if [[ -z "$workspaces" ]]; then
     exit 0
 fi
 
-while IFS= read -r ws; do
-    echo "workspace/$(basename "$ws")/"
-done <<< "$workspaces"
+# Use sed instead of while loop + basename (faster)
+echo "$workspaces" | sed 's|.*/|workspace/|;s|$|/|'
