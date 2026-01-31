@@ -7,11 +7,13 @@ description: Update TODO items in a workspace repository
 
 ## Overview
 
-This skill updates TODO items in a workspace's TODO file. It supports adding, removing, and modifying TODO items while preserving completed items.
+This skill updates TODO items in a workspace's TODO file. It delegates the actual update work to the `workspace-repo-todo-updater` agent.
+
+**After completion:** Use `/workspace-execute` to work through the updated TODO items.
 
 ## Steps
 
-### 1. Workspace and TODO File
+### 1. Validate Workspace and Repository
 
 **Required**: User must specify the workspace and TODO file (or repository name).
 
@@ -20,93 +22,53 @@ This skill updates TODO items in a workspace's TODO file. It supports adding, re
 - Workspace format: `workspace/{workspace-name}` or just `{workspace-name}`
 - TODO file format: `TODO-{repository-name}.md` or just `{repository-name}`
 
-### 2. Understand the Update Request
+### 2. Parse Update Request
 
-Determine what kind of update the user wants:
-
+Identify what the user wants to change:
 - **Add**: Add new TODO items
-- **Remove**: Remove existing TODO items (only uncompleted items)
-- **Modify**: Change existing TODO items (description, order, etc.)
+- **Remove**: Remove existing TODO items
+- **Modify**: Change existing TODO items
 
-### 3. Read Current TODO File
+### 3. Delegate to Agent
 
-Read the TODO file to understand the current state:
+Invoke the `workspace-repo-todo-updater` agent:
 
-```bash
-# TODO file path
-workspace/{workspace-name}/TODO-{repository-name}.md
+```yaml
+Task tool:
+  subagent_type: workspace-repo-todo-updater
+  run_in_background: true
+  prompt: |
+    Update TODO items in workspace repository.
+    Workspace Directory: workspace/{workspace-name}
+    Repository Name: {repository-name}
+    Update Request: {what the user wants to change}
 ```
 
-### 4. Apply Updates
+### 4. Report Results
 
-Apply the requested changes to the TODO file.
-
-**Important constraints:**
-- **NEVER delete completed TODO items** (items marked with `[x]`)
-- Preserve the overall structure of the TODO file
-- Keep completed items in their original location for history
-
-**For adding items:**
-- Add to the appropriate section
-- Follow the existing format and style
-
-**For removing items:**
-- Only remove uncompleted items (items marked with `[ ]`)
-- If the user requests to remove a completed item, warn them and skip it
-
-**For modifying items:**
-- Update the description or details as requested
-- Preserve the completion status
-
-### 5. Confirm Changes
-
-After updating, summarize what was changed:
-
-```
-## TODO Updated
-
-**File**: workspace/{workspace-name}/TODO-{repository-name}.md
-
-**Changes**:
-- Added: {count} items
-- Removed: {count} items
-- Modified: {count} items
-
-**Details**:
-- Added: "{item description}"
-- Removed: "{item description}"
-- Modified: "{old}" → "{new}"
-```
-
-### 6. Commit Workspace Snapshot
-
-After updating the TODO file, commit the changes:
-
-```bash
-./.claude/scripts/commit-workspace-snapshot.sh {workspace-name}
-```
+After the agent completes, summarize the changes to the user.
 
 ## Example Usage
 
 ### Add a new TODO item
 
 ```
-User: Add a TODO item to implement error handling in the auth module
-Assistant: [Identifies workspace and repo, adds the item to the TODO file]
+User: /workspace-update-todo feature-user-auth auth-service Add a TODO item to implement error handling
+Assistant: [Validates input, delegates to agent, reports results]
 ```
 
 ### Remove a TODO item
 
 ```
-User: Remove the TODO about adding comments
-Assistant: [Checks if item is completed, removes if not]
+User: /workspace-update-todo feature-user-auth auth-service Remove the TODO about adding comments
+Assistant: [Validates input, delegates to agent, reports results]
 ```
 
 ### Modify a TODO item
 
 ```
-User: Change the priority of the testing task
-Assistant: [Updates the item's position or description]
+User: /workspace-update-todo feature-user-auth auth-service Change the priority of the testing task
+Assistant: [Validates input, delegates to agent, reports results]
 ```
 
 ## Next Steps - Ask User to Proceed
@@ -130,6 +92,6 @@ If the user selects "Execute now", invoke the `/workspace-execute` skill using t
 
 ## Notes
 
-- Always read the TODO file before making changes to avoid conflicts
-- Completed items are historical records and must be preserved
-- Follow the existing formatting style in the TODO file
+- The agent will preserve completed items (items marked with `[x]`)
+- Only uncompleted items can be removed
+- The agent commits changes automatically after updating
