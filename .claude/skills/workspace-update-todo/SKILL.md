@@ -86,14 +86,6 @@ After updating the TODO file, commit the changes:
 ./.claude/scripts/commit-workspace-snapshot.sh {workspace-name}
 ```
 
-### 7. Suggest Next Steps
-
-If `workspace-repo-todo-executor` is not currently running, suggest executing the workspace:
-
-```
-**Next step**: Run `/workspace-execute` to work through the updated TODO items.
-```
-
 ## Example Usage
 
 ### Add a new TODO item
@@ -116,6 +108,25 @@ Assistant: [Checks if item is completed, removes if not]
 User: Change the priority of the testing task
 Assistant: [Updates the item's position or description]
 ```
+
+## Next Steps - Ask User to Proceed
+
+After TODO update is complete, **always ask the user** whether to proceed with the next step using AskUserQuestion:
+
+```yaml
+AskUserQuestion tool:
+  questions:
+    - question: "TODO file updated. Would you like to proceed with executing the updated TODO items?"
+      header: "Next Step"
+      multiSelect: false
+      options:
+        - label: "Execute now"
+          description: "Run /workspace-execute to work through TODO items immediately"
+        - label: "Skip for now"
+          description: "I'll review the changes first and execute later"
+```
+
+If the user selects "Execute now", invoke the `/workspace-execute` skill using the Skill tool.
 
 ## Notes
 
