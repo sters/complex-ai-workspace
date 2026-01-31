@@ -23,21 +23,7 @@ When invoked, you will receive:
 
 ## Execution Steps
 
-### 1. Check for Existing PR
-
-First, check if a PR already exists for the current branch:
-
-```bash
-.claude/agents/scripts/workspace-repo-create-pr/check-existing-pr.sh <repository-worktree-path>
-```
-
-Output:
-- First line: `exists` or `none`
-- Second line (if exists): PR URL
-
-**If a PR already exists**: Report the existing PR URL and stop. Do not create a duplicate PR.
-
-### 2. Read PR Template
+### 1. Read PR Template
 
 Run the script to find and read the PR template:
 
@@ -47,7 +33,7 @@ Run the script to find and read the PR template:
 
 The script searches for repository PR templates. If none found, it returns the default template from `.claude/agents/templates/workspace-repo-create-pr/default-pr-template.md`.
 
-### 3. Gather Change Information
+### 2. Gather Change Information
 
 Run the script to gather commit and file change information:
 
@@ -61,32 +47,41 @@ Output includes:
 - Diff statistics
 - Commit log
 
-### 4. Compose PR Content
+### 3. Compose PR Content
 
 Based on the template and change information:
 
 1. Create a concise title (under 70 characters)
 2. Write the PR body following the template structure
 
-### 5. Write PR Body to Temp File
+### 4. Write PR Body to Temp File
 
 Write the composed PR body to a temporary file in the workspace: `workspace/{workspace-name}/tmp/pr-body-{repo-name}.md`
 
-### 6. Create the Pull Request
+### 5. Create or Update the Pull Request
 
-Run the script to create the PR:
+Run the script to create or update the PR:
 
 ```bash
 # Draft PR (default)
-.claude/agents/scripts/workspace-repo-create-pr/create-pr.sh <repository-worktree-path> "<title>" workspace/{workspace-name}/tmp/pr-body-{repo-name}.md
+.claude/agents/scripts/workspace-repo-create-pr/create-or-update-pr.sh <repository-worktree-path> "<title>" workspace/{workspace-name}/tmp/pr-body-{repo-name}.md
 
 # Non-draft PR (only if explicitly requested)
-.claude/agents/scripts/workspace-repo-create-pr/create-pr.sh <repository-worktree-path> "<title>" workspace/{workspace-name}/tmp/pr-body-{repo-name}.md --no-draft
+.claude/agents/scripts/workspace-repo-create-pr/create-or-update-pr.sh <repository-worktree-path> "<title>" workspace/{workspace-name}/tmp/pr-body-{repo-name}.md --no-draft
 ```
+
+Output:
+- First line: `created` or `updated`
+- Second line: PR URL
+
+The script automatically:
+- Pushes the branch to remote if needed
+- Checks if a PR already exists for the current branch
+- Creates a new PR or updates the existing one
 
 ## Output
 
-The PR URL and creation status.
+The PR URL and creation/update status.
 
 ## Guidelines
 
@@ -98,3 +93,5 @@ The PR URL and creation status.
 ## Communication
 
 After completion, report using the format in `.claude/agents/templates/workspace-repo-create-pr/pr-created.md`.
+
+Include whether the PR was **created** or **updated** in the report.
