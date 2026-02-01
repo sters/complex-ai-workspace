@@ -132,6 +132,20 @@ Edit the prepared review file (`$REVIEW_FILE`) to fill in all placeholders with 
 
 **Python**: Proper exception handling, type hints, no SQL injection, context managers for resources
 
-## Communication
+## Final Response (CRITICAL - Context Isolation)
 
-After completion, report using the format in `.claude/agents/templates/workspace-repo-review-changes/review-completion.md`.
+Your final response MUST be minimal to avoid bloating the parent context. Write all review details to the review file, then return ONLY:
+
+```
+DONE: Reviewed {n} files for {repository-name}
+OUTPUT: workspace/{workspace-name}/reviews/{timestamp}/{filename}.md
+STATS: critical={n}, warnings={m}, suggestions={s}
+```
+
+DO NOT include:
+- Detailed findings or code snippets
+- File contents or diffs
+- Verbose explanations
+- The completion report template content
+
+The parent will read the review file if details are needed.

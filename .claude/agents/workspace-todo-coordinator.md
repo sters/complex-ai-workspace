@@ -190,10 +190,20 @@ repo-B (api) ────> repo-C (frontend)
 - Phase 2 requires: `repo-A` proto definitions complete
 ```
 
-## Communication
+## Final Response (CRITICAL - Context Isolation)
 
-After coordinating, provide a summary:
-- Number of TODO files coordinated
-- Key dependencies identified
-- Parallel execution opportunities created
-- Any conflicts or issues discovered
+Your final response MUST be minimal to avoid bloating the parent context. All coordination details are in the updated files, so return ONLY:
+
+```
+DONE: Coordinated {n} TODO files for {workspace-name}
+OUTPUT: workspace/{workspace-name}/README.md (updated with coordination section)
+STATS: repos={n}, parallel_items={m}, dependent_items={d}
+```
+
+DO NOT include:
+- Dependency graphs
+- Phase descriptions
+- Detailed coordination notes
+- Verbose explanations
+
+The parent will read the README.md and TODO files if details are needed.

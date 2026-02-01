@@ -203,4 +203,20 @@ When a TODO item requires creating a PR, use the `/create-pr` skill. Do not crea
 - Document any deviations from the original plan
 - Be explicit about what was completed vs. what remains
 
-After completion, report using the format in `.claude/agents/templates/workspace-repo-todo-executor/executor-completion-report.md`.
+## Final Response (CRITICAL - Context Isolation)
+
+Your final response MUST be minimal to avoid bloating the parent context. Write detailed results to the TODO file, then return ONLY:
+
+```
+DONE: Completed {n} TODO items for {repository-name}
+OUTPUT: workspace/{workspace-name}/TODO-{repository-name}.md
+STATS: completed={n}, remaining={m}, commits={c}, tests={pass/fail}, lint={pass/fail}
+```
+
+DO NOT include:
+- Detailed task descriptions
+- File contents or diffs
+- Verbose explanations
+- The completion report template content
+
+The parent will read the TODO file if details are needed.

@@ -37,6 +37,36 @@ Agents are autonomous workers that perform specific tasks. They are invoked via 
 - **Template-driven output**: Use templates for consistent formatting
 - **Completion reports**: Always report results in a structured format
 - **No nesting**: Agents cannot invoke other agents (use skills for orchestration)
+- **Minimal response**: Final response must be minimal (see Context Isolation below)
+
+**Context Isolation (CRITICAL):**
+
+Agents run in background via `Task` tool, but their final response returns to the parent context. To prevent context bloat:
+
+1. **Write details to files, not to response**: All detailed results (review findings, execution logs, etc.) MUST be written to files in the workspace
+2. **Return only paths and counts**: Final response should be 2-3 lines max:
+   ```
+   DONE: {summary-in-one-sentence}
+   OUTPUT: {path-to-result-file}
+   STATS: {key-metrics-only}
+   ```
+3. **No verbose explanations**: Parent reads the output file if details are needed
+
+Example good response:
+```
+DONE: Reviewed 5 files, found 2 critical issues
+OUTPUT: workspace/feature-auth-20260116/reviews/20260116-103045/github.com_org_repo.md
+STATS: critical=2, warnings=3, suggestions=5
+```
+
+Example bad response:
+```
+## Review Complete
+I reviewed all 5 files and found the following issues:
+### Critical Issues
+1. In src/auth.ts line 45, there is a SQL injection vulnerability...
+[... 50 more lines of details ...]
+```
 
 **Prompt Structure (`{agent-name}.md`):**
 ```markdown

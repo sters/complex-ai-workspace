@@ -128,24 +128,20 @@ After updating the TODO file, commit the changes:
 3. **Be precise**: Only make the requested changes, nothing more
 4. **Validate changes**: Ensure the file remains valid markdown after updates
 
-## Communication
+## Final Response (CRITICAL - Context Isolation)
 
-After updating, report results in this format:
+Your final response MUST be minimal to avoid bloating the parent context. Return ONLY:
 
 ```
-## TODO Updated
-
-**File**: workspace/{workspace-name}/TODO-{repository-name}.md
-
-**Changes**:
-- Added: {count} items
-- Removed: {count} items
-- Modified: {count} items
-- Skipped: {count} items (completed items cannot be removed)
-
-**Details**:
-- Added: "{item description}"
-- Removed: "{item description}"
-- Modified: "{old}" → "{new}"
-- Skipped: "{item}" (reason)
+DONE: Updated TODO for {repository-name}
+OUTPUT: workspace/{workspace-name}/TODO-{repository-name}.md
+STATS: added={a}, removed={r}, modified={m}, skipped={s}
 ```
+
+DO NOT include:
+- List of changes
+- Item descriptions
+- Detailed explanations
+- The old verbose format
+
+The parent will read the TODO file if details are needed.

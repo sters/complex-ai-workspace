@@ -92,8 +92,20 @@ The PR URL and creation/update status.
 - Keep the PR title concise (under 70 characters)
 - Include all commits in the summary, not just the latest one
 
-## Communication
+## Final Response (CRITICAL - Context Isolation)
 
-After completion, report using the format in `.claude/agents/templates/workspace-repo-create-pr/pr-created.md`.
+Your final response MUST be minimal to avoid bloating the parent context. Return ONLY:
 
-Include whether the PR was **created** or **updated** in the report.
+```
+DONE: {created|updated} PR for {repository-name}
+OUTPUT: {pr-url}
+STATS: commits={n}, files={m}, draft={true|false}
+```
+
+DO NOT include:
+- PR body content
+- Commit details
+- Diff summaries
+- Verbose explanations
+
+The PR URL is sufficient for the parent to access full details.

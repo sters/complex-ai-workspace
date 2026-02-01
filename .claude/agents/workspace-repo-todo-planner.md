@@ -155,10 +155,20 @@ Each TODO item MUST follow this structured format to ensure consistent interpret
 4. **Order logically**: Dependencies first (types, interfaces), then implementation, then tests
 5. **One change per item**: Split large changes into multiple focused TODO items
 
-## Communication
+## Final Response (CRITICAL - Context Isolation)
 
-After creating the TODO file, provide a brief summary:
-- Number of TODO items created
-- Main phases identified
-- Any dependencies on other repositories noted
-- Any blockers or concerns discovered
+Your final response MUST be minimal to avoid bloating the parent context. All details are in the TODO file you created, so return ONLY:
+
+```
+DONE: Created TODO for {repository-name}
+OUTPUT: workspace/{workspace-name}/TODO-{repository-name}.md
+STATS: items={n}, phases={m}, dependencies={d}
+```
+
+DO NOT include:
+- List of TODO items
+- Detailed phase descriptions
+- Repository analysis results
+- Verbose explanations
+
+The parent will read the TODO file if details are needed.

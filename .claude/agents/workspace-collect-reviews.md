@@ -77,6 +77,20 @@ Then edit the file to fill in all placeholders with the collected results.
 - Prioritize critical issues when listing top priority issues
 - Use relative paths in SUMMARY.md to make markdown links work correctly
 
-## Communication
+## Final Response (CRITICAL - Context Isolation)
 
-After completion, report using the format in `.claude/agents/templates/workspace-collect-reviews/collection-complete.md`.
+Your final response MUST be minimal to avoid bloating the parent context. All details are in the SUMMARY.md file, so return ONLY:
+
+```
+DONE: Collected reviews for {workspace-name}
+OUTPUT: workspace/{workspace-name}/reviews/{timestamp}/SUMMARY.md
+STATS: repos={n}, critical={c}, warnings={w}, suggestions={s}
+```
+
+DO NOT include:
+- Individual repository findings
+- Detailed statistics
+- Lists of issues
+- Verbose explanations
+
+The parent will read SUMMARY.md if details are needed.
