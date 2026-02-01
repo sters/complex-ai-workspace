@@ -12,7 +12,10 @@ tools:
   - Glob
   - Grep
   - Bash
+  - Task
+  - TodoWrite
   - Explore
+  - AskUserQuestion
 ---
 
 # Workspace Repository Changes Review Agent

@@ -6,9 +6,14 @@ description: |
 tools:
   - Read
   - Write
+  - Edit
   - Glob
   - Grep
+  - Bash
+  - Task
+  - TodoWrite
   - Explore
+  - AskUserQuestion
 ---
 
 # Collect Review Results Agent

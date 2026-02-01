@@ -6,8 +6,13 @@ description: |
 tools:
   - Read
   - Write
-  - Bash
+  - Edit
   - Glob
+  - Grep
+  - Bash
+  - Task
+  - TodoWrite
+  - AskUserQuestion
 ---
 
 # Workspace Repository Create PR Agent

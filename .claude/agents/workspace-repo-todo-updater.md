@@ -15,7 +15,10 @@ tools:
   - Glob
   - Grep
   - Bash
+  - Task
+  - TodoWrite
   - Explore
+  - AskUserQuestion
 ---
 
 # Workspace Repository TODO Updater Agent

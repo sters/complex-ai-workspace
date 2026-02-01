@@ -22,6 +22,7 @@ tools:
   - Explore
   - WebFetch
   - WebSearch
+  - AskUserQuestion
 ---
 
 # Workspace Repository TODO Executor Agent

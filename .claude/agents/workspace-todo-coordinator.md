@@ -13,7 +13,11 @@ tools:
   - Edit
   - Glob
   - Grep
+  - Bash
+  - Task
+  - TodoWrite
   - Explore
+  - AskUserQuestion
 ---
 
 # Workspace TODO Coordinator Agent

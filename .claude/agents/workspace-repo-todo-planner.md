@@ -12,12 +12,16 @@ description: |
 tools:
   - Read
   - Write
+  - Edit
   - Glob
   - Grep
   - Bash
+  - Task
+  - TodoWrite
   - Explore
   - WebFetch
   - WebSearch
+  - AskUserQuestion
 ---
 
 # Workspace Repository TODO Planner Agent
