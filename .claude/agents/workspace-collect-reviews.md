@@ -8,6 +8,7 @@ tools:
   - Write
   - Glob
   - Grep
+  - Explore
 ---
 
 # Collect Review Results Agent

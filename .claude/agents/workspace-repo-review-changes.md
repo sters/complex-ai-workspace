@@ -12,6 +12,7 @@ tools:
   - Glob
   - Grep
   - Bash
+  - Explore
 ---
 
 # Workspace Repository Changes Review Agent

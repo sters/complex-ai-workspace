@@ -13,6 +13,7 @@ tools:
   - Edit
   - Glob
   - Grep
+  - Explore
 ---
 
 # Workspace TODO Coordinator Agent

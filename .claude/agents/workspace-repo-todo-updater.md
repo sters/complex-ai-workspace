@@ -14,6 +14,7 @@ tools:
   - Edit
   - Glob
   - Bash
+  - Explore
 ---
 
 # Workspace Repository TODO Updater Agent

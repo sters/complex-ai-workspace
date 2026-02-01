@@ -15,6 +15,7 @@ tools:
   - Glob
   - Grep
   - Bash
+  - Explore
 ---
 
 # Workspace Repository TODO Planner Agent
