@@ -100,39 +100,60 @@ Edit the copied TODO file to add specific details based on your analysis.
 5. **Include commands**: Specify exact build/test/lint commands from documentation
 6. **Match repository conventions**: Follow the coding style and patterns found in the repo
 
-### TODO Item Quality
+### TODO Item Format
 
-**Be specific**: Each TODO should describe a concrete action
-- Bad: "Implement the feature"
-- Good: "Add `CreateUser` method to `UserService` in `services/user.go`"
+Each TODO item MUST follow this structured format to ensure consistent interpretation by the executor agent:
 
-**Include context**: Reference specific files, functions, or patterns
-- "Follow the pattern used in `CreateOrder` for error handling"
-- "Add tests similar to `user_test.go` structure"
+```markdown
+- [ ] **[Target]** Action description
+  - Target: `path/to/file.go` or "New file" or "Multiple files in dir/"
+  - Action: Specific change to make (what to add/modify/remove)
+  - Pattern: (optional) Reference to existing code pattern to follow
+  - Verify: (optional) How to verify the change is correct
+```
 
-**Consider dependencies**: Order items logically
-- Infrastructure changes first (types, interfaces)
-- Implementation second
-- Tests and validation last
+**Required fields:**
+- **Target** (in bold brackets): The file, component, or area being modified
+- **Action**: Clear description of what to do - must be specific enough that another agent can execute without ambiguity
 
-**Include verification steps**: Testing and linting
-- "Run `make test` to verify changes"
-- "Run `make lint` and fix any issues"
+**Optional fields:**
+- **Pattern**: Existing code to reference for consistency (file:function or file:line)
+- **Verify**: Test command, test name, or manual verification step
 
-### Example
+### Format Examples
 
-**Too vague:**
+**Bad - too vague:**
 ```markdown
 - [ ] Add API endpoint
+- [ ] Implement the feature
+- [ ] Fix the bug
 ```
 
-**Good:**
+**Good - structured and specific:**
 ```markdown
-- [ ] Add `POST /api/users` endpoint in `handlers/user_handler.go`
-  - Follow pattern from `CreateOrder` handler
-  - Use `UserService.CreateUser()` for business logic
-  - Return 201 on success with user ID in response body
+- [ ] **[handlers/user_handler.go]** Add POST /api/users endpoint
+  - Target: `handlers/user_handler.go` (new function)
+  - Action: Create `CreateUserHandler` function that accepts JSON body with `name`, `email` fields, calls `UserService.CreateUser()`, returns 201 with user ID
+  - Pattern: `handlers/order_handler.go:CreateOrderHandler`
+  - Verify: `go test ./handlers -run TestCreateUserHandler`
+
+- [ ] **[services/user.go]** Add CreateUser method
+  - Target: `services/user.go` (add to UserService struct)
+  - Action: Add `CreateUser(ctx context.Context, input CreateUserInput) (*User, error)` method that validates input and inserts into database
+  - Pattern: `services/order.go:CreateOrder` for transaction handling
+
+- [ ] **[db/migrations/]** Add users table migration
+  - Target: `db/migrations/` (new file)
+  - Action: Create migration file `YYYYMMDD_create_users_table.sql` with columns: id (uuid), name (varchar 255), email (varchar 255 unique), created_at, updated_at
 ```
+
+### Writing Guidelines
+
+1. **Be explicit about the target**: Always specify the exact file path or clearly state "new file"
+2. **Describe the action completely**: Include function signatures, field names, return values where applicable
+3. **Reference patterns**: When the codebase has similar implementations, point to them
+4. **Order logically**: Dependencies first (types, interfaces), then implementation, then tests
+5. **One change per item**: Split large changes into multiple focused TODO items
 
 ## Communication
 

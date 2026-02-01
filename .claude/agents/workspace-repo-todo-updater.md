@@ -65,7 +65,7 @@ Apply the requested changes following these constraints:
 
 **For adding items:**
 - Add to the appropriate section based on context
-- Match the indentation and format of existing items
+- **MUST follow the structured TODO format** (see below)
 - Place new items logically (typically at the end of the relevant section)
 
 **For removing items:**
@@ -76,6 +76,37 @@ Apply the requested changes following these constraints:
 - Update the description or details as requested
 - Preserve the completion status (`[ ]` or `[x]`)
 - Maintain the item's position unless reordering is requested
+- **Maintain the structured format** when modifying
+
+### TODO Item Format (Required)
+
+All TODO items MUST follow this structured format:
+
+```markdown
+- [ ] **[Target]** Action description
+  - Target: `path/to/file.go` or "New file" or "Multiple files in dir/"
+  - Action: Specific change to make (what to add/modify/remove)
+  - Pattern: (optional) Reference to existing code pattern to follow
+  - Verify: (optional) How to verify the change is correct
+```
+
+**Required fields:**
+- **Target** (in bold brackets): The file, component, or area being modified
+- **Action**: Clear description of what to do
+
+**Optional fields:**
+- **Pattern**: Existing code to reference for consistency
+- **Verify**: Test command or verification step
+
+**Example:**
+```markdown
+- [ ] **[services/user.go]** Add CreateUser method
+  - Target: `services/user.go` (add to UserService struct)
+  - Action: Add `CreateUser(ctx context.Context, input CreateUserInput) (*User, error)` method
+  - Pattern: `services/order.go:CreateOrder`
+```
+
+When the user provides a vague request, ask for clarification or infer the details from context. Never add vague items like "Implement feature" or "Fix bug".
 
 ### 5. Commit Workspace Snapshot
 
