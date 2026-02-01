@@ -6,18 +6,43 @@ set -e
 # Example: ./setup-repository.sh feature-user-auth-20260131 github.com/org/repo
 # Example: BASE_BRANCH=develop ./setup-repository.sh feature-user-auth-20260131 github.com/org/repo
 #
+# Alias syntax: Use :<alias> suffix to create multiple worktrees from the same repository
+# Example: ./setup-repository.sh feature-user-auth-20260131 github.com/org/repo:dev
+# Example: ./setup-repository.sh feature-user-auth-20260131 github.com/org/repo:prod
+#
+# The alias is converted to ___<alias> in directory names (e.g., repo___dev)
+#
 # Base branch is auto-detected from remote. To override, set BASE_BRANCH environment variable.
 
 WORKSPACE_NAME="$1"
-REPOSITORY_PATH_INPUT="$2"
+REPOSITORY_PATH_ARG="$2"
 # BASE_BRANCH can be set via environment variable, otherwise it will be auto-detected
 
-if [ -z "$WORKSPACE_NAME" ] || [ -z "$REPOSITORY_PATH_INPUT" ]; then
+if [ -z "$WORKSPACE_NAME" ] || [ -z "$REPOSITORY_PATH_ARG" ]; then
     echo "Usage: $0 <workspace-name> <org/repo-path>"
     echo "Example: $0 feature-user-auth-20260131 github.com/org/repo"
     echo ""
+    echo "Alias syntax: Use :<alias> suffix for multiple worktrees from same repo"
+    echo "Example: $0 feature-user-auth-20260131 github.com/org/repo:dev"
+    echo ""
     echo "Base branch is auto-detected. To override: BASE_BRANCH=develop $0 ..."
     exit 1
+fi
+
+# Parse alias syntax (e.g., github.com/org/repo:dev -> repo path + alias)
+# Input uses ":" for convenience, directory uses "___" for filesystem safety
+if [[ "$REPOSITORY_PATH_ARG" == *":"* ]]; then
+    ACTUAL_REPO_PATH="${REPOSITORY_PATH_ARG%:*}"
+    REPO_ALIAS="${REPOSITORY_PATH_ARG##*:}"
+    # Convert to directory-safe format: github.com/org/repo___dev
+    REPOSITORY_PATH_INPUT="${ACTUAL_REPO_PATH}___${REPO_ALIAS}"
+    echo "==> Alias detected: $REPO_ALIAS"
+    echo "==> Actual repository: $ACTUAL_REPO_PATH"
+    echo "==> Directory path: $REPOSITORY_PATH_INPUT"
+else
+    ACTUAL_REPO_PATH="$REPOSITORY_PATH_ARG"
+    REPOSITORY_PATH_INPUT="$REPOSITORY_PATH_ARG"
+    REPO_ALIAS=""
 fi
 
 # Get the script directory and workspace root
@@ -42,17 +67,18 @@ if [ ! -f "$WORKING_DIR/README.md" ]; then
     exit 1
 fi
 
-# Extract repository name from path (last component)
+# Extract repository name from path (last component, includes alias if present)
 REPOSITORY_NAME=$(basename "$REPOSITORY_PATH_INPUT")
-REPOSITORY_PATH="$REPOSITORIES_DIR/$REPOSITORY_PATH_INPUT"
+# Use actual repo path for cloning (without alias)
+REPOSITORY_PATH="$REPOSITORIES_DIR/$ACTUAL_REPO_PATH"
 
 echo "==> Adding repository to workspace: $REPOSITORY_PATH_INPUT"
 
-# Step 1: Clone or update repository
+# Step 1: Clone or update repository (using actual repo path, not alias path)
 if [ ! -d "$REPOSITORY_PATH" ]; then
-    echo "==> Repository not found. Cloning from $REPOSITORY_PATH_INPUT..."
+    echo "==> Repository not found. Cloning from $ACTUAL_REPO_PATH..."
     # Generate clone URL from repository path (e.g., github.com/org/repo -> https://github.com/org/repo.git)
-    REPO_URL="https://${REPOSITORY_PATH_INPUT}.git"
+    REPO_URL="https://${ACTUAL_REPO_PATH}.git"
     echo "Clone URL: $REPO_URL"
     # Create parent directory structure
     mkdir -p "$(dirname "$REPOSITORY_PATH")"
@@ -105,10 +131,19 @@ echo "==> Creating git worktree..."
 cd "$REPOSITORY_PATH"
 
 # Create new branch name based on task info
+# Include alias in branch name if present (to avoid collision when same repo is used multiple times)
 if [ -n "$TICKET_ID" ]; then
-    NEW_BRANCH="${TASK_TYPE}/${TICKET_ID}-${DESCRIPTION}"
+    if [ -n "$REPO_ALIAS" ]; then
+        NEW_BRANCH="${TASK_TYPE}/${TICKET_ID}-${DESCRIPTION}-${REPO_ALIAS}"
+    else
+        NEW_BRANCH="${TASK_TYPE}/${TICKET_ID}-${DESCRIPTION}"
+    fi
 else
-    NEW_BRANCH="${TASK_TYPE}/${DESCRIPTION}-${DATE}"
+    if [ -n "$REPO_ALIAS" ]; then
+        NEW_BRANCH="${TASK_TYPE}/${DESCRIPTION}-${REPO_ALIAS}"
+    else
+        NEW_BRANCH="${TASK_TYPE}/${DESCRIPTION}-${DATE}"
+    fi
 fi
 
 # Create worktree with a new branch based on the base branch

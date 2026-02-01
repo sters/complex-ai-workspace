@@ -29,6 +29,10 @@ Before running the setup scripts, ensure you have:
 
 **Note:** Base branch is automatically detected from the remote default (main/master). You don't need to specify it.
 
+**Alias syntax:** If you need to use the same repository multiple times (e.g., separate PRs for dev/prod environments), use the `:alias` suffix:
+- `github.com/org/repo:dev` → Creates worktree at `github.com/org/repo___dev/`
+- `github.com/org/repo:prod` → Creates worktree at `github.com/org/repo___prod/`
+
 ### 2. Run Setup Scripts
 
 #### Step 2a: Create Workspace
@@ -110,6 +114,23 @@ Bash tool:
 Bash tool:
   command: BASE_BRANCH=develop ./.claude/skills/workspace-init/scripts/setup-repository.sh feature-user-auth-20260131 github.com/org/repo
 ```
+
+**Same repository with different aliases** (for separate PRs):
+
+```yaml
+# First Bash tool call - dev environment
+Bash tool:
+  command: ./.claude/skills/workspace-init/scripts/setup-repository.sh feature-user-auth-20260131 github.com/org/repo:dev
+
+# Second Bash tool call (in same message) - prod environment
+Bash tool:
+  command: ./.claude/skills/workspace-init/scripts/setup-repository.sh feature-user-auth-20260131 github.com/org/repo:prod
+```
+
+This creates:
+- `github.com/org/repo___dev/` with branch `feature/user-auth-dev`
+- `github.com/org/repo___prod/` with branch `feature/user-auth-prod`
+- `TODO-repo___dev.md` and `TODO-repo___prod.md`
 
 The script will:
 - Clone or update the target repository
@@ -214,6 +235,27 @@ Assistant:
   7. Done!
 ```
 
+### Example 3: Same Repository with Aliases (Dev/Prod)
+
+```
+User: Initialize a workspace for deploying a config change to both dev and prod,
+      creating separate PRs for each in github.com/org/infra
+Assistant:
+  1. [Runs setup-workspace.sh] → Creates workspace/feature-config-change-20260201
+  2. [Fills in README.md Repositories section]:
+     - **infra-dev**: `github.com/org/infra:dev`
+     - **infra-prod**: `github.com/org/infra:prod`
+  3. [Calls 2 Bash tools in single message for setup-repository.sh]:
+     - github.com/org/infra:dev → worktree at github.com/org/infra___dev/, branch feature/config-change-dev
+     - github.com/org/infra:prod → worktree at github.com/org/infra___prod/, branch feature/config-change-prod
+  4. [Fills in README.md with task details]
+  5. [Calls 2 Task tools in single message for workspace-repo-todo-planner]:
+     - Creates TODO-infra___dev.md
+     - Creates TODO-infra___prod.md
+  6. [Calls workspace-todo-coordinator]
+  7. Done! Each alias will result in a separate PR.
+```
+
 ## Next Steps - Ask User to Proceed
 
 After initialization is complete, **always ask the user** whether to proceed with the next step using AskUserQuestion:
@@ -242,3 +284,4 @@ If the user selects "Execute now", invoke the `/workspace-execute` skill using t
 - TODO files are created by planner agents, not by the setup scripts
 - Workspace naming convention: `{task-type}-{ticket-id}-{description}-{date}` or `{task-type}-{description}-{date}`
 - For single repository workspaces, the coordinator step is still run but makes minimal changes
+- **Alias syntax**: Use `repo:alias` to create multiple worktrees from the same repository (e.g., `github.com/org/repo:dev` and `github.com/org/repo:prod`). The alias is converted to `___alias` in directory names for filesystem safety.
