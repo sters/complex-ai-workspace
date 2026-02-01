@@ -7,6 +7,7 @@ tools:
   - Read
   - Write
   - Bash
+  - Glob
 ---
 
 # Workspace Repository Create PR Agent

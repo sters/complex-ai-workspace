@@ -16,6 +16,8 @@ tools:
   - Grep
   - Bash
   - Explore
+  - WebFetch
+  - WebSearch
 ---
 
 # Workspace Repository TODO Planner Agent

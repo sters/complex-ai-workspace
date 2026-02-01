@@ -19,6 +19,9 @@ tools:
   - Bash
   - Task
   - TodoWrite
+  - Explore
+  - WebFetch
+  - WebSearch
 ---
 
 # Workspace Repository TODO Executor Agent

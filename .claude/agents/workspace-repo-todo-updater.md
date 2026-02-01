@@ -13,6 +13,7 @@ tools:
   - Write
   - Edit
   - Glob
+  - Grep
   - Bash
   - Explore
 ---
