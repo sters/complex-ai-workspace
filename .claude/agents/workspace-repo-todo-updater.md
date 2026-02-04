@@ -18,6 +18,8 @@ tools:
   - Task
   - TodoWrite
   - Explore
+  - WebFetch
+  - WebSearch
   - AskUserQuestion
 ---
 
@@ -59,7 +61,29 @@ Parse the update request to determine:
 - **Remove**: Existing items to remove (only uncompleted items)
 - **Modify**: Items to change (description, order, etc.)
 
-### 4. Apply Updates
+### 4. Analyze Repository (for Add requests)
+
+When adding new TODO items, the request may be **abstract** (e.g., "add error handling") rather than **concrete** (e.g., "add try-catch in handlers/user.go").
+
+**If the request is abstract**, analyze the repository to create specific TODO items:
+
+1. **Read workspace context**:
+   - `workspace/{workspace-name}/README.md` - understand the overall task
+   - Existing TODO file - understand what's already planned/done
+
+2. **Analyze the repository** at `workspace/{workspace-name}/{org}/{repo}/`:
+   - Read `CLAUDE.md`, `README.md`, `CONTRIBUTING.md` for conventions
+   - Explore relevant code to understand patterns
+   - Identify specific files and functions to modify
+
+3. **Convert to actionable TODOs**:
+   - Turn abstract requests into specific, structured TODO items
+   - Include file paths, function names, patterns to follow
+   - Reference existing code patterns when applicable
+
+**If the request is already concrete** (includes file paths, specific actions), skip analysis and proceed to apply.
+
+### 5. Apply Updates
 
 Apply the requested changes following these constraints:
 
@@ -114,7 +138,7 @@ All TODO items MUST follow this structured format:
 
 When the user provides a vague request, ask for clarification or infer the details from context. Never add vague items like "Implement feature" or "Fix bug".
 
-### 5. Commit Workspace Snapshot
+### 6. Commit Workspace Snapshot
 
 After updating the TODO file, commit the changes:
 

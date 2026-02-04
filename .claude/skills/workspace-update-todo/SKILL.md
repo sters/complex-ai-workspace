@@ -22,14 +22,16 @@ This skill updates TODO items in a workspace's TODO file. It delegates the actua
 - Workspace format: `workspace/{workspace-name}` or just `{workspace-name}`
 - TODO file format: `TODO-{repository-name}.md` or just `{repository-name}`
 
-### 2. Parse Update Request
+### 2. Delegate to Agent
 
-Identify what the user wants to change:
-- **Add**: Add new TODO items
-- **Remove**: Remove existing TODO items
-- **Modify**: Change existing TODO items
+Pass the user's request **as-is** to the agent. Do NOT convert to TODO format yourself.
 
-### 3. Delegate to Agent
+The agent will:
+- Analyze the repository if the request is abstract
+- Convert abstract requests (e.g., "add error handling") to specific TODOs
+- Apply concrete requests directly
+
+### 3. Invoke Agent
 
 Invoke the `workspace-repo-todo-updater` agent:
 
@@ -44,9 +46,24 @@ Task tool:
     Update Request: {what the user wants to change}
 ```
 
-### 4. Report Results
+### 4. Coordinate Multi-Repository Dependencies (if applicable)
 
-After the agent completes, summarize the changes to the user.
+After the updater agent completes, **if the workspace has multiple repositories**, invoke the coordinator to re-optimize dependencies:
+
+```yaml
+Task tool:
+  subagent_type: workspace-todo-coordinator
+  run_in_background: true
+  prompt: |
+    Coordinate TODO files after update.
+    Workspace Name: {workspace-name}
+```
+
+Skip this step for single-repository workspaces.
+
+### 5. Report Results
+
+After all agents complete, summarize the changes to the user.
 
 ## Example Usage
 
