@@ -58,6 +58,47 @@ Agents are autonomous workers that perform specific tasks. They are invoked via 
 - **Completion reports**: Always report results in a structured format
 - **No nesting**: Agents cannot invoke other agents (use skills for orchestration)
 - **Minimal response**: Final response must be minimal (see Context Isolation below)
+- **Autonomous behavior**: Agents define their own behavior, not callers (see below)
+
+**Autonomous Agent Pattern (CRITICAL):**
+
+Agents must be **self-driven**, not **prompt-driven**. The agent's behavior should be defined in the agent file itself, not in the prompts passed from skills.
+
+1. **Core Behavior section**: Every agent MUST have a `## Core Behavior` section that defines:
+   - The agent's mission in one sentence
+   - The steps it always performs, regardless of how it's invoked
+
+   ```markdown
+   ## Core Behavior
+
+   **Your mission is simple and unwavering: {mission}.**
+
+   You do NOT depend on external prompts to determine what to do. Regardless of how you are invoked, you always:
+   1. {step 1}
+   2. {step 2}
+   3. {step 3}
+   ```
+
+2. **Minimal prompts from skills**: Skills should pass only essential parameters:
+   ```yaml
+   # Good - parameters only
+   prompt: |
+     Workspace: {workspace-name}
+     Repository: {org/repo-path}
+
+   # Bad - includes behavioral instructions
+   prompt: |
+     Execute tasks in workspace.
+     Read the TODO file and complete all items.
+     Workspace: {workspace-name}
+     Repository: {org/repo-path}
+   ```
+
+3. **Why this matters**:
+   - Agents behave consistently regardless of how they're called
+   - Changes to agent behavior are made in one place (the agent file)
+   - Prompts don't accidentally override or conflict with agent design
+   - Easier to test and debug
 
 **Context Isolation (CRITICAL):**
 
@@ -107,9 +148,18 @@ tools:
 
 {Role description - "You are a specialized agent for..."}
 
+## Core Behavior
+
+**Your mission is simple and unwavering: {mission in one sentence}.**
+
+You do NOT depend on external prompts to determine what to do. Regardless of how you are invoked, you always:
+1. {step 1}
+2. {step 2}
+3. {step 3}
+
 ## Initial Context
 
-When invoked, you will receive:
+When invoked, you will receive only:
 - **{Parameter}**: {description}
 
 ## Execution Steps

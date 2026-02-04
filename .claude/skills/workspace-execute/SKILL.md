@@ -52,12 +52,11 @@ Task tool:
   subagent_type: workspace-repo-todo-executor
   run_in_background: true
   prompt: |
-    Execute tasks in workspace: {workspace-name}
-    Repository path: {org/repo-path}
-    Repository name: {repo-name}
+    Workspace: {workspace-name}
+    Repository: {org/repo-path}
 ```
 
-**What the agent does:**
+**What the agent does (defined in agent, not by prompt):**
 
 - Reads README.md and `TODO-{repository-name}.md` to understand the task
 - Executes TODO items sequentially

@@ -167,11 +167,14 @@ Task tool:
   subagent_type: workspace-repo-todo-planner
   run_in_background: true
   prompt: |
-    Create TODO items for repository in workspace.
-    Workspace Name: {workspace-name}
-    Repository Path: {org/repo-path}
-    Repository Name: {repo-name}
+    Workspace: {workspace-name}
+    Repository: {org/repo-path}
 ```
+
+**What the agent does (defined in agent, not by prompt):**
+- Reads workspace README.md to understand the task
+- Analyzes repository structure and documentation
+- Creates detailed TODO items in `TODO-{repo-name}.md`
 
 **Run multiple planners in parallel** if there are multiple repositories.
 
@@ -189,11 +192,10 @@ Task tool:
   subagent_type: workspace-todo-coordinator
   run_in_background: true
   prompt: |
-    Coordinate TODO items across repositories in workspace.
-    Workspace Name: {workspace-name}
+    Workspace: {workspace-name}
 ```
 
-The coordinator will:
+**What the agent does (defined in agent, not by prompt):**
 - Read all TODO files
 - Analyze dependencies between repositories
 - Restructure TODOs to maximize parallel execution

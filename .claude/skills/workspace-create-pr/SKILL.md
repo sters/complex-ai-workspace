@@ -47,14 +47,16 @@ Task tool:
   subagent_type: workspace-repo-create-pr
   run_in_background: true
   prompt: |
-    Create a pull request for the repository.
-
-    Workspace Name: {workspace-name}
-    Repository Path: {org/repo-path}
-    Repository Name: {repo-name}
+    Workspace: {workspace-name}
+    Repository: {org/repo-path}
     Base Branch: {base-branch}
-    Draft: true (unless user requested non-draft)
+    Draft: {true|false}
 ```
+
+**What the agent does (defined in agent, not by prompt):**
+- Finds and respects the repository's PR template
+- Gathers change information from commits
+- Creates or updates the pull request
 
 **Important**: Launch agents in parallel if there are multiple repositories.
 

@@ -49,11 +49,16 @@ Task tool:
   subagent_type: workspace-repo-todo-updater
   run_in_background: true
   prompt: |
-    Update TODO items in workspace repository.
-    Workspace Name: {workspace-name}
-    Repository Name: {repository-name}
+    Workspace: {workspace-name}
+    Repository: {repository-name}
     Update Request: {what the user wants to change}
 ```
+
+**What the agent does (defined in agent, not by prompt):**
+- Reads the current TODO file
+- Applies the requested changes
+- Removes completed items automatically
+- Commits the changes
 
 ### 4. Coordinate Multi-Repository Dependencies (if applicable)
 
@@ -64,9 +69,13 @@ Task tool:
   subagent_type: workspace-todo-coordinator
   run_in_background: true
   prompt: |
-    Coordinate TODO files after update.
-    Workspace Name: {workspace-name}
+    Workspace: {workspace-name}
 ```
+
+**What the agent does (defined in agent, not by prompt):**
+- Reads all TODO files
+- Analyzes cross-repository dependencies
+- Restructures for parallel execution
 
 Skip this step for single-repository workspaces.
 

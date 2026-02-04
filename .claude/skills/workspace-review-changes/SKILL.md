@@ -60,15 +60,16 @@ Task tool:
   subagent_type: workspace-repo-review-changes
   run_in_background: true
   prompt: |
-    Review changes for repository in workspace.
-
-    Task Name: {task-name}
-    Workspace Name: {workspace-name}
-    Repository Path: {org/repo-path}
-    Repository Name: {repo-name}
+    Workspace: {workspace-name}
+    Repository: {org/repo-path}
     Base Branch: {base-branch}
     Review Timestamp: {timestamp}
 ```
+
+**What the agent does (defined in agent, not by prompt):**
+- Compares current branch against remote base branch
+- Reviews code for security, performance, and quality issues
+- Writes review report to the review directory
 
 **Example**: For repository `github.com/sters/complex-ai-workspace`, the filename would be `github.com_sters_complex-ai-workspace.md` (slashes replaced with underscores).
 
@@ -83,13 +84,11 @@ Task tool:
   subagent_type: workspace-collect-reviews
   run_in_background: true
   prompt: |
-    Collect review results from the review directory.
-
-    Workspace Name: {workspace-name}
+    Workspace: {workspace-name}
     Review Timestamp: {timestamp}
 ```
 
-The agent will:
+**What the agent does (defined in agent, not by prompt):**
 1. Read all review files and extract statistics
 2. Create `SUMMARY.md` in the review directory
 3. Return aggregated results for presenting to the user
