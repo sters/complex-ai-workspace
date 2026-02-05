@@ -2,6 +2,23 @@
 
 A multi-repository workspace manager for Claude Code. This tool provides Claude with skills and sub-agents to handle complex tasks across multiple repositories using git worktrees for isolation.
 
+## Prerequisites
+
+The following tools must be installed and available in your PATH:
+
+- **git** - For repository cloning, worktree management, and version control operations
+- **gh** (GitHub CLI) - For creating and managing pull requests
+
+### Installation
+
+```bash
+# macOS (Homebrew)
+brew install git gh
+
+# Authenticate with GitHub
+gh auth login
+```
+
 ## Usage
 
 1. Clone this repo
