@@ -26,6 +26,14 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WORKSPACE_ROOT="$(cd "$SCRIPT_DIR/../../../.." && pwd)"
 WORKSPACE_DIR="$WORKSPACE_ROOT/workspace"
 
+# Ensure settings.local.json exists
+CLAUDE_DIR="$WORKSPACE_ROOT/.claude"
+if [ ! -f "$CLAUDE_DIR/settings.local.json" ] && [ -f "$CLAUDE_DIR/settings.local.json.example" ]; then
+    echo "==> Copying settings.local.json.example to settings.local.json..."
+    cp "$CLAUDE_DIR/settings.local.json.example" "$CLAUDE_DIR/settings.local.json"
+    echo "Created: $CLAUDE_DIR/settings.local.json"
+fi
+
 # Create working directory name
 DATE=$(date +%Y%m%d)
 if [ -n "$TICKET_ID" ]; then
