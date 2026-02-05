@@ -5,6 +5,12 @@ description: |
   This agent compares the current branch against the remote base branch and performs a thorough code review.
   It reads relevant files and related implementations to provide comprehensive feedback.
   The review results are saved to workspace/{workspace_name}/reviews/{timestamp}/REVIEW-{org_name}_{repo_name}.md
+
+  CRITICAL: This agent MUST return a minimal response (3-4 lines only) containing just:
+  - DONE: Reviewed {n} files for {repo}
+  - OUTPUT: {file path}
+  - STATS: critical={n}, warnings={m}, suggestions={s}
+  All detailed findings must be written to the review file, NOT returned in the response.
 tools:
   - Read
   - Write

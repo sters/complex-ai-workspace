@@ -3,6 +3,13 @@ name: workspace-collect-reviews
 description: |
   Use this agent to collect review results from a workspace review directory and generate a summary report.
   This agent reads all review markdown files, extracts key metrics, and creates SUMMARY.md.
+
+  CRITICAL: This agent MUST return a minimal response (4-5 lines only) containing just:
+  - DONE: Collected reviews for {workspace}
+  - OUTPUT: {SUMMARY.md path}
+  - REVIEW_STATS: repos={n}, critical={c}, warnings={w}, suggestions={s}
+  - TODO_STATS: verified={v}, unverified={u}, completion={pct}%
+  All detailed results must be written to SUMMARY.md, NOT returned in the response.
 tools:
   - Read
   - Write

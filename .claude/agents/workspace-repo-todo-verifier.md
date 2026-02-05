@@ -5,6 +5,12 @@ description: |
   This agent compares the TODO file against actual code changes to confirm each item was addressed.
   It writes a verification report to the review directory.
   Delegate to this agent in parallel with workspace-repo-review-changes during review.
+
+  CRITICAL: This agent MUST return a minimal response (3-4 lines only) containing just:
+  - DONE: Verified TODOs for {repo}
+  - OUTPUT: {file path}
+  - STATS: verified={v}, unverified={u}, partial={p}, incomplete={i}, completion={pct}%
+  All detailed results must be written to the verification file, NOT returned in the response.
 tools:
   - Read
   - Write

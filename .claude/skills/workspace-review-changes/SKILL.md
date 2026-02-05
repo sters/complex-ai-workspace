@@ -125,9 +125,28 @@ After all reviews complete, commit the workspace changes (including review resul
 
 ### 7. Present Summary to User
 
-Display a concise summary to the user.
+Display a concise summary to the user using ONLY the statistics returned from the `workspace-collect-reviews` agent response.
 
-Refer to `.claude/skills/workspace-review-changes/templates/user-summary.md` for the format and fill in the placeholders with the collected results.
+**CRITICAL: DO NOT read the SUMMARY.md or any review files to present results.** This will cause context explosion.
+
+Present to user:
+1. The stats from the agent response (repos, critical, warnings, suggestions, completion rate)
+2. The file path to SUMMARY.md for detailed review
+3. Ask if they want to proceed to PR creation
+
+Example output:
+```
+## Review Complete
+
+Reviewed 2 repositories in workspace/feature-x-20260116
+
+**Results**: 0 critical, 3 warnings, 5 suggestions
+**TODO Completion**: 95% (19/20 items verified)
+
+**Full Report**: workspace/feature-x-20260116/reviews/20260116-103045/SUMMARY.md
+
+Would you like to create pull requests?
+```
 
 ## Example Usage
 
