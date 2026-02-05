@@ -46,7 +46,7 @@ gh auth login
 5. Review and create PR:
    ```
    /workspace-review-changes
-   /workspace-create-pr
+   /workspace-create-or-update-pr
    ```
 
 ## How It Works
@@ -61,7 +61,7 @@ Tasks are executed in isolated directories (`./workspace/{task-name}-{date}/`) u
 | `/workspace-add-repo` | Add a repository to a workspace (clones if needed, creates worktree) |
 | `/workspace-execute` | Execute TODO items (implements code, runs tests, makes commits) |
 | `/workspace-review-changes` | Review code changes and generate review reports |
-| `/workspace-create-pr` | Create pull requests for all repositories (draft by default) |
+| `/workspace-create-or-update-pr` | Create or update pull requests for all repositories (draft by default) |
 | `/workspace-update-todo` | Add, remove, or modify TODO items |
 | `/workspace-show-status` | Show TODO progress and background agent status |
 | `/workspace-list` | List all workspaces |
@@ -86,7 +86,7 @@ Agents are specialized sub-processes that handle specific tasks autonomously. **
 | `workspace-repo-review-changes` | Reviews code changes and generates review report | `/workspace-review-changes` |
 | `workspace-repo-todo-verifier` | Verifies TODO items have been completed | `/workspace-review-changes` |
 | `workspace-collect-reviews` | Collects review results and creates summary | `/workspace-review-changes` |
-| `workspace-repo-create-pr` | Creates pull request following repo's PR template | `/workspace-create-pr` |
+| `workspace-repo-create-or-update-pr` | Creates or updates pull request following repo's PR template | `/workspace-create-or-update-pr` |
 
 ### Skills and Agents Relationship
 
@@ -109,8 +109,8 @@ Agents are specialized sub-processes that handle specific tasks autonomously. **
   ├─→ workspace-repo-todo-verifier (per repository, parallel)
   └─→ workspace-collect-reviews
 
-/workspace-create-pr
-  └─→ workspace-repo-create-pr (per repository, parallel)
+/workspace-create-or-update-pr
+  └─→ workspace-repo-create-or-update-pr (per repository, parallel)
 ```
 
 ## Policies

@@ -19,7 +19,7 @@ This is a multi-repository workspace manager for Claude Code. It enables complex
 /workspace-review-changes
 
 # 4. Create pull request
-/workspace-create-pr
+/workspace-create-or-update-pr
 ```
 
 ## Available Skills
@@ -30,7 +30,7 @@ This is a multi-repository workspace manager for Claude Code. It enables complex
 | `/workspace-add-repo` | Add a repository to a workspace (clones if needed, creates worktree) |
 | `/workspace-execute` | Execute TODO items (implements code, runs tests, makes commits) |
 | `/workspace-review-changes` | Review code changes and generate review reports |
-| `/workspace-create-pr` | Create pull requests for all repositories (draft by default) |
+| `/workspace-create-or-update-pr` | Create or update pull requests for all repositories (draft by default) |
 | `/workspace-update-todo` | Add, remove, or modify TODO items |
 | `/workspace-show-status` | Show TODO progress and background agent status |
 | `/workspace-list` | List all workspaces |
@@ -85,7 +85,7 @@ Generates reports in `workspace/{task}/reviews/{timestamp}/`:
 ### 4. Create Pull Request
 
 ```
-/workspace-create-pr
+/workspace-create-or-update-pr
 ```
 
 - Finds and follows the repository's PR template

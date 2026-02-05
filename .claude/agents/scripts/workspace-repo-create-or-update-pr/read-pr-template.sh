@@ -43,7 +43,7 @@ done
 
 # No template found, use default
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-DEFAULT_TEMPLATE="${SCRIPT_DIR}/../../templates/workspace-repo-create-pr/default-pr-template.md"
+DEFAULT_TEMPLATE="${SCRIPT_DIR}/../../templates/workspace-repo-create-or-update-pr/default-pr-template.md"
 
 if [ -f "$DEFAULT_TEMPLATE" ]; then
     cat "$DEFAULT_TEMPLATE"

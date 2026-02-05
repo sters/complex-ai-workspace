@@ -164,7 +164,7 @@ AskUserQuestion tool:
       multiSelect: false
       options:
         - label: "Create PRs (draft)"
-          description: "Run /workspace-create-pr to create draft pull requests"
+          description: "Run /workspace-create-or-update-pr to create draft pull requests"
         - label: "Create PRs (ready for review)"
           description: "Create non-draft pull requests immediately"
         - label: "Fix issues first"
@@ -172,8 +172,8 @@ AskUserQuestion tool:
 ```
 
 Based on the user's selection:
-- "Create PRs (draft)" → Invoke the `/workspace-create-pr` skill using the Skill tool (default draft mode)
-- "Create PRs (ready for review)" → Invoke the `/workspace-create-pr` skill with non-draft option
+- "Create PRs (draft)" → Invoke the `/workspace-create-or-update-pr` skill using the Skill tool (default draft mode)
+- "Create PRs (ready for review)" → Invoke the `/workspace-create-or-update-pr` skill with non-draft option
 - "Fix issues first" → End the workflow so user can address review findings
 
 ## Notes

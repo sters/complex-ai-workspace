@@ -113,22 +113,24 @@ After execution is complete, **always ask the user** whether to proceed with the
 ```yaml
 AskUserQuestion tool:
   questions:
-    - question: "Task execution complete. Would you like to review the code changes before creating a PR?"
+    - question: "Task execution complete. Would you like to review the code changes before creating/updating a PR?"
       header: "Next Step"
       multiSelect: false
       options:
         - label: "Review changes (Recommended)"
           description: "Run /workspace-review-changes to check for issues before PR"
-        - label: "Skip review, create PR"
-          description: "Proceed directly to /workspace-create-pr"
+        - label: "Skip review, create/update PR"
+          description: "Proceed directly to /workspace-create-or-update-pr (creates new PR or updates existing)"
         - label: "Done for now"
           description: "I'll continue manually later"
 ```
 
 Based on the user's selection:
 - "Review changes" → Invoke the `/workspace-review-changes` skill using the Skill tool
-- "Skip review, create PR" → Invoke the `/workspace-create-pr` skill using the Skill tool
+- "Skip review, create/update PR" → Invoke the `/workspace-create-or-update-pr` skill using the Skill tool
 - "Done for now" → End the workflow
+
+**Important**: Always suggest `/workspace-create-or-update-pr` instead of manual `git push`. The skill handles both creating new PRs and updating existing PRs automatically.
 
 ## Notes
 

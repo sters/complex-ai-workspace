@@ -143,7 +143,7 @@ Question: {specific question to ask user}
 ### Example Output (Clean)
 
 ```
-REVIEW: mercari-api
+REVIEW: api
 STATUS: CLEAN
 BLOCKING: 0
 UNCLEAR: 0
@@ -152,7 +152,7 @@ UNCLEAR: 0
 ### Example Output (Has Issues)
 
 ```
-REVIEW: mercari-api
+REVIEW: api
 STATUS: HAS_ISSUES
 BLOCKING: 1
 UNCLEAR: 2
