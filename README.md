@@ -1,4 +1,4 @@
-# complex-ai-workspace
+# ai-workspace
 
 A multi-repository workspace manager for Claude Code. This tool provides Claude with skills and sub-agents to handle complex tasks across multiple repositories using git worktrees for isolation.
 

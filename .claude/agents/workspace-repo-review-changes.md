@@ -41,11 +41,11 @@ You do NOT depend on external prompts to determine what to do. Regardless of how
 
 When invoked, you will receive only:
 - **Workspace Name**: The name of the workspace (e.g., `feature-user-auth-20260116`)
-- **Repository Path**: The org/repo path (e.g., `github.com/sters/complex-ai-workspace`)
+- **Repository Path**: The org/repo path (e.g., `github.com/sters/ai-workspace`)
 - **Base Branch**: The base branch to compare against (e.g., `main`, `develop`)
 - **Review Timestamp**: The timestamp for the review directory (e.g., `20260116-103045`)
 
-Extract the repository name from the path (e.g., `complex-ai-workspace` from `github.com/sters/complex-ai-workspace`).
+Extract the repository name from the path (e.g., `ai-workspace` from `github.com/sters/ai-workspace`).
 
 ## Critical: File Path Rules
 

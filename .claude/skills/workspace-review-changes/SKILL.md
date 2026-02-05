@@ -91,9 +91,9 @@ Task tool:
 - Verifies each TODO against actual code changes
 - Writes verification report (`TODO-VERIFY-{org}_{repo}.md`) to review directory
 
-**Example filenames**: For repository `github.com/sters/complex-ai-workspace`:
-- Code review: `REVIEW-github.com_sters_complex-ai-workspace.md`
-- TODO verification: `TODO-VERIFY-github.com_sters_complex-ai-workspace.md`
+**Example filenames**: For repository `github.com/sters/ai-workspace`:
+- Code review: `REVIEW-github.com_sters_ai-workspace.md`
+- TODO verification: `TODO-VERIFY-github.com_sters_ai-workspace.md`
 
 **Important**: Launch ALL agents (both review and verification for all repos) in parallel in a single message. Pass the same `{timestamp}` value to all agents.
 

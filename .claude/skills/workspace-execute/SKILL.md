@@ -40,8 +40,8 @@ Find all repository worktrees in the workspace:
 ```
 
 For each repository, extract:
-- Repository path (e.g., `github.com/sters/complex-ai-workspace`)
-- Repository name (e.g., `complex-ai-workspace`)
+- Repository path (e.g., `github.com/sters/ai-workspace`)
+- Repository name (e.g., `ai-workspace`)
 
 ### 3. Delegate to workspace-repo-todo-executor Agent
 

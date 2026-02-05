@@ -35,7 +35,7 @@ Before running the setup scripts, ensure you have:
 
 - Task type (feature, bugfix, research, etc.)
 - Brief description
-- Target repository path(s) in org/repo format (e.g., github.com/sters/complex-ai-workspace)
+- Target repository path(s) in org/repo format (e.g., github.com/sters/ai-workspace)
 - Ticket ID (optional)
 
 **Note:** Base branch is automatically detected from the remote default (main/master). You don't need to specify it.
