@@ -1,6 +1,6 @@
 ---
 name: workspace-show-status
-description: Show TODO progress and background agent status
+description: "Show TODO progress and background agent status for a workspace. Use to check how far along an existing workspace is before deciding next steps."
 ---
 
 # workspace-show-status

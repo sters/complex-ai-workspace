@@ -1,6 +1,6 @@
 ---
 name: workspace-execute
-description: Execute TODO items (implements code, runs tests, makes commits)
+description: "Continue working on an existing workspace by executing TODO items. Implements code, runs tests, makes commits. Use when the user wants to resume or continue work on a previously initialized workspace, or after /workspace-init completes."
 ---
 
 # workspace-execute

@@ -22,18 +22,61 @@ This is a multi-repository workspace manager for Claude Code. It enables complex
 /workspace-create-or-update-pr
 ```
 
+## Task Detection & Routing
+
+When a user shares a task — even without explicitly calling a slash command — automatically route to the workspace system.
+
+### Trigger Patterns
+
+Recognize these as workspace tasks:
+- **Ticket URLs**: Jira (`atlassian.net/browse/XXX`), GitHub Issues (`github.com/.../issues/N`), Linear, etc. paired with a request to work on it
+- **Task requests**: "work on X", "implement X", "fix X", "build X", "start X"
+- **Casual requests**: "これをすすめて", "これやって", "取り掛かって", "this ticket please", etc.
+- **Feature/bugfix descriptions** that imply multi-step development work across repositories
+
+### Routing Logic
+
+1. **First**: Run `/workspace-list` to check for existing workspaces matching the ticket/task
+2. **If workspace exists**:
+   - Run `/workspace-show-status {workspace}` to check progress
+   - If TODO items remain → suggest or run `/workspace-execute`
+   - If all items done → suggest `/workspace-review-changes` or `/workspace-create-or-update-pr`
+3. **If no workspace exists**: Run `/workspace-init` to create a new workspace
+4. **If ticket URL is provided**: Fetch the ticket details (using appropriate tools) and use them to fill in the workspace README
+
+### Examples
+
+```
+# User pastes a Jira ticket URL and says "work on this"
+User: https://mercari.atlassian.net/browse/CC-2573 これをすすめて
+→ 1. /workspace-list → check if CC-2573 workspace exists
+→ 2a. If exists: /workspace-show-status → /workspace-execute (resume)
+→ 2b. If not: /workspace-init (create new workspace for CC-2573)
+
+# User describes a task
+User: Add retry logic to the payment service in github.com/org/payment-api
+→ 1. /workspace-list → no matching workspace
+→ 2. /workspace-init feature add-retry-logic github.com/org/payment-api
+
+# User wants to continue previous work
+User: CC-2573の続きをやって
+→ 1. /workspace-list → find workspace with CC-2573
+→ 2. /workspace-show-status → check progress
+→ 3. /workspace-execute → resume work
+```
+
 ## Available Skills
 
 | Skill | Description |
 |-------|-------------|
-| `/workspace-init` | Create a new workspace with README and TODO files (calls `/workspace-add-repo` to clone and create worktrees) |
-| `/workspace-add-repo` | Add a repository to a workspace (clones if needed, creates worktree) |
-| `/workspace-execute` | Execute TODO items (implements code, runs tests, makes commits) |
+| `/workspace-init` | Start working on a new task/ticket/feature — creates workspace, clones repos, plans TODOs (always check `/workspace-list` first) |
+| `/workspace-add-repo` | Add a repository to an existing workspace (clones if needed, creates worktree) |
+| `/workspace-execute` | Continue/resume work — executes TODO items in an existing workspace (implements code, runs tests, commits) |
 | `/workspace-review-changes` | Review code changes and generate review reports |
 | `/workspace-create-or-update-pr` | Create or update pull requests for all repositories (draft by default) |
 | `/workspace-update-todo` | Add, remove, or modify TODO items |
-| `/workspace-show-status` | Show TODO progress and background agent status |
-| `/workspace-list` | List all workspaces |
+| `/workspace-show-status` | Check progress of a workspace — shows TODO completion and agent status |
+| `/workspace-list` | List all workspaces — use to find existing workspaces before creating new ones |
 | `/workspace-show-current` | Display the specified workspace path |
 | `/workspace-show-history` | Show commit history of README/TODO changes |
 | `/workspace-delete` | Delete a workspace (with confirmation) |

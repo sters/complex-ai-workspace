@@ -1,6 +1,6 @@
 ---
 name: workspace-init
-description: Create a new workspace with README and TODO files
+description: "Use when the user wants to start working on a task, ticket, or feature. Triggered by: ticket URLs (Jira, GitHub Issues, Linear, etc.), task descriptions, or requests like 'work on this', 'implement X', 'fix X', 'これをすすめて', 'これやって'. IMPORTANT: Before creating a new workspace, ALWAYS run /workspace-list first to check if a workspace already exists for the same ticket/task. If one exists, use /workspace-execute or /workspace-show-status instead. Creates workspace with README, clones repos, and plans TODO items via agents."
 ---
 
 # workspace-init
