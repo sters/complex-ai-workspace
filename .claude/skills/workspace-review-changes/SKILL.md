@@ -14,7 +14,7 @@ This skill reviews code changes across all repositories in a workspace by delega
 **ALWAYS use paths relative to the project root** (where `.claude/` directory exists).
 
 When accessing workspace files, use paths like:
-- `workspace/{workspace-name}/reviews/{timestamp}/*.md`
+- `workspace/{workspace-name}/artifacts/reviews/{timestamp}/*.md`
 
 **DO NOT** use absolute paths (starting with `/`) for workspace files. The permission system requires relative paths from the project root.
 
@@ -43,13 +43,13 @@ For each repository:
 
 ### 3. Create Reviews Directory
 
-Run the script to create a timestamped review directory. **Important**: Capture the output path and reuse it for all parallel agents to ensure consistency.
+Run the script to create a timestamped review directory. **Important**: Capture the output path from the Bash tool result and reuse it for all parallel agents to ensure consistency.
 
 ```bash
-REVIEW_DIR=$(.claude/skills/workspace-review-changes/scripts/prepare-review-dir.sh {workspace-name})
+.claude/skills/workspace-review-changes/scripts/prepare-review-dir.sh {workspace-name}
 ```
 
-The script outputs the created directory path (e.g., `workspace/{workspace-name}/reviews/20260116-103045`).
+The script outputs the created directory path to stdout (e.g., `workspace/{workspace-name}/artifacts/reviews/20260116-103045`). Use this path in subsequent steps.
 
 ### 4. Delegate to Review and Verification Agents for Each Repository
 
@@ -143,7 +143,7 @@ Reviewed 2 repositories in workspace/feature-x-20260116
 **Results**: 0 critical, 3 warnings, 5 suggestions
 **TODO Completion**: 95% (19/20 items verified)
 
-**Full Report**: workspace/feature-x-20260116/reviews/20260116-103045/SUMMARY.md
+**Full Report**: workspace/feature-x-20260116/artifacts/reviews/20260116-103045/SUMMARY.md
 
 Would you like to create pull requests?
 ```
@@ -158,7 +158,7 @@ Assistant: Let me review the workspace. First, I'll identify which workspace you
 [Identifies repositories, launches review agents]
 [After completion]
 Review complete! I found 2 critical issues and 5 warnings across 3 repositories.
-Summary: workspace/feature-user-auth-20260116/reviews/20260116-103045/SUMMARY.md
+Summary: workspace/feature-user-auth-20260116/artifacts/reviews/20260116-103045/SUMMARY.md
 ```
 
 ### Example 2: Review Specific Workspace

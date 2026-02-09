@@ -116,7 +116,7 @@ Agents run in background via `Task` tool, but their final response returns to th
 Example good response:
 ```
 DONE: Reviewed 5 files, found 2 critical issues
-OUTPUT: workspace/feature-auth-20260116/reviews/20260116-103045/github.com_org_repo.md
+OUTPUT: workspace/feature-auth-20260116/artifacts/reviews/20260116-103045/github.com_org_repo.md
 STATS: critical=2, warnings=3, suggestions=5
 ```
 

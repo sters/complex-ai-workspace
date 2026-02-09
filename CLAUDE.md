@@ -120,7 +120,7 @@ Launches agents for each repository (in parallel):
 - `workspace-repo-review-changes`: Reviews code for security, performance, and quality issues
 - `workspace-repo-todo-verifier`: Verifies TODO items have been completed
 
-Generates reports in `workspace/{task}/reviews/{timestamp}/`:
+Generates reports in `workspace/{task}/artifacts/reviews/{timestamp}/`:
 - `REVIEW-{org}_{repo}.md` - Code review report
 - `TODO-VERIFY-{org}_{repo}.md` - TODO completion verification
 - `SUMMARY.md` - Aggregated summary
@@ -151,12 +151,12 @@ Generates reports in `workspace/{task}/reviews/{timestamp}/`:
         ├── README.md           # Task context
         ├── TODO-{repo}.md      # Task checklist
         ├── artifacts/          # Persistent outputs (research, notes, etc.) - git tracked
+        │   └── reviews/        # Code review output
         ├── tmp/                # Temporary files (PR bodies, scratch) - gitignored
-        ├── reviews/            # Code review output
         └── {org}/{repo}/       # Git worktree (excluded from workspace git)
 ```
 
-Each workspace is a git repository that tracks README.md, TODO-*.md, artifacts/, and reviews/ changes. Use `/workspace-show-history` to view the history.
+Each workspace is a git repository that tracks README.md, TODO-*.md, and artifacts/ (including reviews/) changes. Use `/workspace-show-history` to view the history.
 
 ## Key Constraints
 

@@ -21,7 +21,7 @@ if [ ! -d "$WORKSPACE_DIR" ]; then
 fi
 
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)
-REVIEW_DIR="${WORKSPACE_DIR}/reviews/${TIMESTAMP}"
+REVIEW_DIR="${WORKSPACE_DIR}/artifacts/reviews/${TIMESTAMP}"
 
 mkdir -p "$REVIEW_DIR"
 

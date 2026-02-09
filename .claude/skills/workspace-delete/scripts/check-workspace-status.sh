@@ -25,7 +25,7 @@ echo "=== LAST ACTIVITY ==="
 LAST_TIMESTAMP=0
 LAST_FILE=""
 
-for FILE in "$WORKSPACE_DIR"/README.md "$WORKSPACE_DIR"/TODO-*.md "$WORKSPACE_DIR"/reviews/*/*.md; do
+for FILE in "$WORKSPACE_DIR"/README.md "$WORKSPACE_DIR"/TODO-*.md "$WORKSPACE_DIR"/artifacts/reviews/*/*.md; do
     if [ -f "$FILE" ]; then
         # macOS uses -f "%m", Linux uses -c "%Y"
         TIMESTAMP=$(stat -f "%m" "$FILE" 2>/dev/null || stat -c "%Y" "$FILE" 2>/dev/null)

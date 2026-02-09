@@ -15,7 +15,7 @@ if [ -z "$WORKSPACE_NAME" ] || [ -z "$TIMESTAMP" ] || [ -z "$REPO_PATH" ]; then
     exit 1
 fi
 
-REVIEW_DIR="workspace/${WORKSPACE_NAME}/reviews/${TIMESTAMP}"
+REVIEW_DIR="workspace/${WORKSPACE_NAME}/artifacts/reviews/${TIMESTAMP}"
 
 if [ ! -d "$REVIEW_DIR" ]; then
     echo "Error: Review directory not found: $REVIEW_DIR" >&2

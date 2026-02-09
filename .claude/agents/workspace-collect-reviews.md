@@ -48,8 +48,8 @@ When invoked, you will receive only:
 **ALWAYS use paths relative to the project root** (where `.claude/` directory exists).
 
 When accessing workspace files, use paths like:
-- `workspace/{workspace-name}/reviews/{timestamp}/*.md`
-- `workspace/{workspace-name}/reviews/{timestamp}/SUMMARY.md`
+- `workspace/{workspace-name}/artifacts/reviews/{timestamp}/*.md`
+- `workspace/{workspace-name}/artifacts/reviews/{timestamp}/SUMMARY.md`
 
 **DO NOT** use absolute paths (starting with `/`) for workspace files. The permission system requires relative paths from the project root.
 
@@ -67,7 +67,7 @@ The script outputs JSON with categorized file lists:
 
 ```json
 {
-  "review_dir": "workspace/{workspace-name}/reviews/{timestamp}",
+  "review_dir": "workspace/{workspace-name}/artifacts/reviews/{timestamp}",
   "code_reviews": ["REVIEW-github.com_org_repo.md", ...],
   "todo_verifications": ["TODO-VERIFY-github.com_org_repo.md", ...]
 }
@@ -126,16 +126,16 @@ Calculate totals across all repositories:
 Run the script to prepare the summary report from template:
 
 ```bash
-SUMMARY_FILE=$(.claude/agents/scripts/workspace-collect-reviews/prepare-summary-report.sh {workspace-name} {review-timestamp})
+.claude/agents/scripts/workspace-collect-reviews/prepare-summary-report.sh {workspace-name} {review-timestamp}
 ```
 
-The script copies the template to `workspace/{workspace-name}/reviews/{review-timestamp}/SUMMARY.md` and outputs the path.
+The script copies the template to `workspace/{workspace-name}/artifacts/reviews/{review-timestamp}/SUMMARY.md` and outputs the path to stdout. Capture this from the Bash tool result.
 
 Then edit the file to fill in all placeholders with the collected results.
 
 ## Output
 
-- `workspace/{workspace-name}/reviews/{review-timestamp}/SUMMARY.md` - Aggregated summary report
+- `workspace/{workspace-name}/artifacts/reviews/{review-timestamp}/SUMMARY.md` - Aggregated summary report
 
 ## Guidelines
 
@@ -151,7 +151,7 @@ Your final response MUST be minimal to avoid bloating the parent context. All de
 
 ```
 DONE: Collected reviews for {workspace-name}
-OUTPUT: workspace/{workspace-name}/reviews/{timestamp}/SUMMARY.md
+OUTPUT: workspace/{workspace-name}/artifacts/reviews/{timestamp}/SUMMARY.md
 REVIEW_STATS: repos={n}, critical={c}, warnings={w}, suggestions={s}
 TODO_STATS: verified={v}, unverified={u}, incomplete={i}, completion={pct}%
 ```

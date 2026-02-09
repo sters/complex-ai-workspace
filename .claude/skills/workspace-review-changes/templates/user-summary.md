@@ -8,7 +8,7 @@ Reviewed {count} repositories in workspace/{workspace-name}
 - Suggestions: {total}
 
 **Reports Generated**:
-- Summary: workspace/{workspace-name}/reviews/{timestamp}/SUMMARY.md
+- Summary: workspace/{workspace-name}/artifacts/reviews/{timestamp}/SUMMARY.md
 - Individual Reviews:
   - {org}_{repo1}.md
   - {org}_{repo2}.md

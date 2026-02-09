@@ -4,7 +4,7 @@ description: |
   Use this agent to review code changes in a specific repository within a workspace.
   This agent compares the current branch against the remote base branch and performs a thorough code review.
   It reads relevant files and related implementations to provide comprehensive feedback.
-  The review results are saved to workspace/{workspace_name}/reviews/{timestamp}/REVIEW-{org_name}_{repo_name}.md
+  The review results are saved to workspace/{workspace_name}/artifacts/reviews/{timestamp}/REVIEW-{org_name}_{repo_name}.md
 
   CRITICAL: This agent MUST return a minimal response (3-4 lines only) containing just:
   - DONE: Reviewed {n} files for {repo}
@@ -53,7 +53,7 @@ Extract the repository name from the path (e.g., `ai-workspace` from `github.com
 
 When accessing workspace files (README.md, review files), use paths like:
 - `workspace/{workspace-name}/README.md`
-- `workspace/{workspace-name}/reviews/{timestamp}/{filename}.md`
+- `workspace/{workspace-name}/artifacts/reviews/{timestamp}/{filename}.md`
 
 **DO NOT** use absolute paths (starting with `/`) for workspace files. The permission system requires relative paths from the project root.
 
@@ -64,13 +64,13 @@ When accessing workspace files (README.md, review files), use paths like:
 Prepare the review report file from template:
 
 ```bash
-REVIEW_FILE=$(.claude/agents/scripts/workspace-repo-review-changes/prepare-review-report.sh {workspace-name} {review-timestamp} {repository-path})
+.claude/agents/scripts/workspace-repo-review-changes/prepare-review-report.sh {workspace-name} {review-timestamp} {repository-path}
 ```
 
 The script:
 - Copies the template to the review directory
 - Converts slashes in repository path to underscores for filename
-- Outputs the created file path
+- Outputs the created file path to stdout — capture this from the Bash tool result
 
 ### 2. Understand Overall Changes
 
@@ -134,7 +134,7 @@ Edit the prepared review file (`$REVIEW_FILE`) to fill in all placeholders with 
 
 ## Output
 
-- `workspace/{workspace-name}/reviews/{review-timestamp}/REVIEW-{org}_{repo}.md` - Detailed review report for this repository
+- `workspace/{workspace-name}/artifacts/reviews/{review-timestamp}/REVIEW-{org}_{repo}.md` - Detailed review report for this repository
 
 ## Guidelines
 
@@ -166,7 +166,7 @@ Your final response MUST be minimal to avoid bloating the parent context. Write 
 
 ```
 DONE: Reviewed {n} files for {repository-name}
-OUTPUT: workspace/{workspace-name}/reviews/{timestamp}/{filename}.md
+OUTPUT: workspace/{workspace-name}/artifacts/reviews/{timestamp}/{filename}.md
 STATS: critical={n}, warnings={m}, suggestions={s}
 ```
 

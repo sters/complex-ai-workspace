@@ -6,7 +6,7 @@ set -e
 # Example: ./commit-workspace-snapshot.sh feature-auth-20260130
 # Example: ./commit-workspace-snapshot.sh feature-auth-20260130 "Custom message"
 #
-# Commits changes to README.md, TODO-*.md, and reviews/ in the workspace git repository.
+# Commits changes to README.md, TODO-*.md, and artifacts/ in the workspace git repository.
 # Only these files are staged; worktree code changes are not included.
 #
 # If message is not provided, auto-generates based on TODO progress:
@@ -40,16 +40,16 @@ if [ ! -d ".git" ]; then
 fi
 
 # Check for changes
-if git diff --quiet HEAD -- README.md TODO-*.md reviews/ 2>/dev/null && \
-   git diff --cached --quiet -- README.md TODO-*.md reviews/ 2>/dev/null && \
-   [ -z "$(git ls-files --others --exclude-standard README.md TODO-*.md reviews/ 2>/dev/null)" ]; then
+if git diff --quiet HEAD -- README.md TODO-*.md artifacts/ 2>/dev/null && \
+   git diff --cached --quiet -- README.md TODO-*.md artifacts/ 2>/dev/null && \
+   [ -z "$(git ls-files --others --exclude-standard README.md TODO-*.md artifacts/ 2>/dev/null)" ]; then
     echo "No changes to commit"
     exit 0
 fi
 
 # Stage changes
 git add README.md TODO-*.md 2>/dev/null || true
-git add reviews/ 2>/dev/null || true
+git add artifacts/ 2>/dev/null || true
 
 # Check if there are staged changes
 if git diff --cached --quiet; then
@@ -66,7 +66,7 @@ if [ -z "$CUSTOM_MESSAGE" ]; then
 
     # Check if reviews were added/updated
     REVIEWS_CHANGED=""
-    if git diff --cached --name-only | grep -q "^reviews/"; then
+    if git diff --cached --name-only | grep -q "^artifacts/reviews/"; then
         REVIEWS_CHANGED=" | reviews updated"
     fi
 

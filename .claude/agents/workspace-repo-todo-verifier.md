@@ -57,7 +57,7 @@ Extract the repository name from the path (e.g., `repo` from `github.com/org/rep
 
 When accessing workspace files, use paths like:
 - `workspace/{workspace-name}/TODO-{repository-name}.md`
-- `workspace/{workspace-name}/reviews/{timestamp}/TODO-VERIFY-{org}_{repo}.md`
+- `workspace/{workspace-name}/artifacts/reviews/{timestamp}/TODO-VERIFY-{org}_{repo}.md`
 
 **DO NOT** use absolute paths (starting with `/`) for workspace files. The permission system requires relative paths from the project root.
 
@@ -114,13 +114,13 @@ Use these methods to verify completion:
 Run the script to prepare the verification report from template:
 
 ```bash
-VERIFY_FILE=$(.claude/agents/scripts/workspace-repo-todo-verifier/prepare-verification-report.sh {workspace-name} {timestamp} {repository-path})
+.claude/agents/scripts/workspace-repo-todo-verifier/prepare-verification-report.sh {workspace-name} {timestamp} {repository-path}
 ```
 
 The script:
 - Copies the template to the review directory
 - Converts slashes in repository path to underscores for filename
-- Outputs the created file path (e.g., `workspace/{workspace-name}/reviews/{timestamp}/TODO-VERIFY_github.com_org_repo.md`)
+- Outputs the created file path to stdout (e.g., `workspace/{workspace-name}/artifacts/reviews/{timestamp}/TODO-VERIFY_github.com_org_repo.md`) — capture this from the Bash tool result
 
 #### 4b. Fill in Template
 
@@ -155,7 +155,7 @@ Then fill in each section with the verification results:
 
 ## Output
 
-- `workspace/{workspace-name}/reviews/{timestamp}/TODO-VERIFY-{org}_{repo}.md`
+- `workspace/{workspace-name}/artifacts/reviews/{timestamp}/TODO-VERIFY-{org}_{repo}.md`
 
 ## Guidelines
 
@@ -174,7 +174,7 @@ Your final response MUST be minimal to avoid bloating the parent context. All de
 
 ```
 DONE: Verified TODOs for {repository-name}
-OUTPUT: workspace/{workspace-name}/reviews/{timestamp}/TODO-VERIFY-{org}_{repo}.md
+OUTPUT: workspace/{workspace-name}/artifacts/reviews/{timestamp}/TODO-VERIFY-{org}_{repo}.md
 STATS: verified={v}, unverified={u}, partial={p}, incomplete={i}, unmarked={m}, completion={pct}%
 ```
 
