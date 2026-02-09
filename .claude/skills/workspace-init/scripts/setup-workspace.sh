@@ -12,6 +12,22 @@ TASK_TYPE="$1"
 DESCRIPTION="$2"
 TICKET_ID="$3"
 
+# Strip ticket ID from description if it's already provided as a separate argument
+# This prevents duplicate ticket IDs like "feature-CC-1234-cc-1234-description-20260209"
+if [ -n "$TICKET_ID" ]; then
+    # Convert both to lowercase for case-insensitive matching
+    TICKET_LOWER=$(echo "$TICKET_ID" | tr '[:upper:]' '[:lower:]')
+    # Work on lowercase description, then apply the same removal to the original
+    DESC_LOWER=$(echo "$DESCRIPTION" | tr '[:upper:]' '[:lower:]')
+    # Remove ticket ID from: beginning (cc-1234-xxx), middle (xxx-cc-1234-xxx), end (xxx-cc-1234), or exact match
+    DESC_CLEANED=$(echo "$DESC_LOWER" | sed -E "s/^${TICKET_LOWER}-//; s/-${TICKET_LOWER}-/-/; s/-${TICKET_LOWER}$//; s/^${TICKET_LOWER}$//")
+    # Remove leading/trailing dashes that may remain
+    DESC_CLEANED=$(echo "$DESC_CLEANED" | sed -E 's/^-+//; s/-+$//')
+    if [ -n "$DESC_CLEANED" ]; then
+        DESCRIPTION="$DESC_CLEANED"
+    fi
+fi
+
 if [ -z "$TASK_TYPE" ] || [ -z "$DESCRIPTION" ]; then
     echo "Usage: $0 <task-type> <description> [ticket-id]"
     echo "Example: $0 feature user-auth"
