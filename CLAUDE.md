@@ -71,7 +71,7 @@ User: CC-2573の続きをやって
 |-------|-------------|
 | `/workspace-init` | Start working on a new task/ticket/feature — creates workspace, clones repos, plans TODOs (always check `/workspace-list` first) |
 | `/workspace-add-repo` | Add a repository to an existing workspace (clones if needed, creates worktree) |
-| `/workspace-execute` | Continue/resume work — executes TODO items in an existing workspace (implements code, runs tests, commits) |
+| `/workspace-execute` | Continue/resume work — executes TODO items (feature/bugfix) or runs cross-repo research (research/investigation) |
 | `/workspace-review-changes` | Review code changes and generate review reports |
 | `/workspace-create-or-update-pr` | Create or update pull requests for all repositories (draft by default) |
 | `/workspace-update-todo` | Add, remove, or modify TODO items |
@@ -93,9 +93,10 @@ User: CC-2573の続きをやって
 Orchestrates workspace setup:
 1. Runs setup script: Creates directory, worktrees, `README.md` template
 2. Fills in `README.md` with task details
-3. Calls `workspace-repo-todo-planner` for each repository (parallel) → Creates `TODO-{repo}.md`
-4. Calls `workspace-todo-coordinator` → Optimizes TODOs for parallel execution
-5. Calls `workspace-repo-todo-reviewer` for each repository (parallel) → Validates TODOs, asks user for clarification if needed
+3. **Task type branching**: Research/investigation tasks skip TODO planning (steps 4-5 below)
+4. Calls `workspace-repo-todo-planner` for each repository (parallel) → Creates `TODO-{repo}.md`
+5. Calls `workspace-todo-coordinator` → Optimizes TODOs for parallel execution
+6. Calls `workspace-repo-todo-reviewer` for each repository (parallel) → Validates TODOs, asks user for clarification if needed
 
 ### 2. Execute Tasks
 
@@ -103,7 +104,14 @@ Orchestrates workspace setup:
 /workspace-execute
 ```
 
-Delegates to `workspace-repo-todo-executor` agent which:
+Detects task type and routes accordingly:
+
+**Research/Investigation tasks** → Delegates to `workspace-researcher` agent which:
+- Reads README.md to understand research objectives
+- Investigates all repositories in the workspace (cross-repo)
+- Writes findings to `artifacts/research-report.md`
+
+**Feature/Bugfix tasks** → Delegates to `workspace-repo-todo-executor` agent (per repo) which:
 - Reads README.md and TODO file to understand the task
 - Works through TODO items sequentially
 - Follows TDD (or repository-specified methodology)
@@ -151,7 +159,8 @@ Generates reports in `workspace/{task}/artifacts/reviews/{timestamp}/`:
         ├── README.md           # Task context
         ├── TODO-{repo}.md      # Task checklist
         ├── artifacts/          # Persistent outputs (research, notes, etc.) - git tracked
-        │   └── reviews/        # Code review output
+        │   ├── reviews/        # Code review output
+        │   └── research-report.md  # Research findings (research tasks only)
         ├── tmp/                # Temporary files (PR bodies, scratch) - gitignored
         └── {org}/{repo}/       # Git worktree (excluded from workspace git)
 ```

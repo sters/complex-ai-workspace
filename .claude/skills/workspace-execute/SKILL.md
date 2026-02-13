@@ -7,7 +7,9 @@ description: "Continue working on an existing workspace by executing TODO items.
 
 ## Overview
 
-This skill executes work in an initialized workspace by delegating to the `workspace-repo-todo-executor` agent for each repository. It works through TODO items, runs tests/linters, and commits changes.
+This skill executes work in an initialized workspace. It detects the task type and routes accordingly:
+- **Research/Investigation tasks**: Delegates to the `workspace-researcher` agent for cross-repository investigation
+- **All other tasks** (feature, bugfix, etc.): Delegates to the `workspace-repo-todo-executor` agent per repository
 
 **Prerequisites:** The workspace must be initialized first using `/workspace-init`.
 
@@ -31,7 +33,52 @@ When accessing workspace files, use paths like:
   > Please specify a workspace. Example: `/workspace-execute workspace/feature-user-auth-20260116`
 - Workspace format: `workspace/{workspace-name}` or just `{workspace-name}`
 
-### 2. Find Repositories
+### 2. Detect Task Type and Route
+
+Read the workspace README.md to determine the task type:
+
+```
+workspace/{workspace-name}/README.md
+```
+
+Look for `**Task Type**` in the README. Based on the value:
+
+- **`research`**, **`investigation`**, **`documentation`**, or **`design-doc`** → **Route A** (Research flow)
+- **All other types** (feature, bugfix, etc.) → **Route B** (Standard TODO execution flow)
+
+**Guideline**: Route A is for tasks whose primary output is a **document** (report, design doc, analysis) based on cross-repository exploration. Route B is for tasks that **modify code** in repositories. If the task type is ambiguous, check the README objective — if it describes producing a document rather than changing code, use Route A.
+
+---
+
+#### Route A: Research Flow
+
+For research/investigation tasks, launch a single `workspace-researcher` agent:
+
+```yaml
+Task tool:
+  subagent_type: workspace-researcher
+  run_in_background: true
+  prompt: |
+    Workspace: {workspace-name}
+```
+
+**What the agent does (defined in agent, not by prompt):**
+
+- Reads README.md to understand research objectives
+- Discovers all repositories in the workspace
+- Investigates each repository and cross-repository concerns
+- Writes findings to `artifacts/research-report.md`
+- Appends a summary to README.md
+
+After the researcher agent completes, **skip directly to Step 6** (Commit Workspace Snapshot).
+
+---
+
+#### Route B: Standard TODO Execution Flow
+
+For feature, bugfix, and other implementation tasks, continue with Step 3 below.
+
+### 3. Find Repositories (Route B only)
 
 Find all repository worktrees in the workspace:
 
@@ -43,7 +90,7 @@ For each repository, extract:
 - Repository path (e.g., `github.com/sters/ai-workspace`)
 - Repository name (e.g., `ai-workspace`)
 
-### 3. Launch Executor Agents
+### 4. Launch Executor Agents (Route B only)
 
 For each repository in the workspace, use the Task tool to launch the `workspace-repo-todo-executor` agent in background:
 
@@ -67,7 +114,7 @@ Task tool:
 
 **Important**: Launch all agents in parallel if there are multiple repositories.
 
-### 4. Monitor and Handle Blockers (Per-Agent)
+### 5. Monitor and Handle Blockers (Route B only)
 
 **Do not wait for all agents to complete.** Instead, monitor each agent and handle blockers as soon as they are reported.
 
@@ -114,18 +161,24 @@ For each agent that completes:
 
 **Parallel handling**: While waiting for user input on one blocker, other agents may complete. Queue their results and process blockers sequentially to avoid overwhelming the user.
 
-### 5. Commit Workspace Snapshot
+### 6. Commit Workspace Snapshot
 
-After **all** repositories are complete (including any re-runs after blocker resolution):
+After execution is complete (Route A: researcher done, Route B: all repositories done including re-runs):
 
 ```bash
 ./.claude/scripts/commit-workspace-snapshot.sh {workspace-name}
 ```
 
-### 6. Report Final Results
+### 7. Report Final Results
 
-Report the execution summary to the user:
+Report the execution summary to the user.
 
+**For Route A (Research):**
+- Research report location
+- Number of repositories analyzed
+- Key findings summary (read from `artifacts/research-report.md` if needed)
+
+**For Route B (Standard):**
 - Completed TODO items count (per repository and total)
 - Remaining TODO items (if any)
 - Skipped items (if any blockers were skipped)
@@ -134,31 +187,36 @@ Report the execution summary to the user:
 
 ## Example Usage
 
-### Example 1: Execute Current Workspace
+### Example 1: Execute Feature Workspace (Route B)
 
 ```
 User: Execute the tasks in my workspace
 Assistant: Let me identify the workspace and execute the TODO items...
+[Reads README.md → Task Type: feature → Route B]
 [Identifies repositories, launches executor agents]
 [After completion]
 Execution complete! Completed 8 TODO items across 2 repositories.
 ```
 
-### Example 2: Execute Specific Workspace
+### Example 2: Execute Research Workspace (Route A)
 
 ```
-User: Execute workspace/feature-user-auth-20260116
-Assistant: I'll execute the tasks in workspace/feature-user-auth-20260116...
-[Launches executor agent for each repository]
+User: Execute workspace/research-auth-flow-20260116
+Assistant: I'll execute the research in workspace/research-auth-flow-20260116...
+[Reads README.md → Task Type: research → Route A]
+[Launches workspace-researcher agent]
 [After completion]
-All TODO items completed. Tests passing, no lint errors.
+Research complete! Report saved to artifacts/research-report.md.
+3 repositories analyzed, 12 findings documented.
 ```
 
 ## Next Steps - Ask User to Proceed
 
-After all execution is complete (Step 6), **always ask the user** whether to proceed with the next step using AskUserQuestion.
+After all execution is complete (Step 7), **always ask the user** whether to proceed with the next step using AskUserQuestion.
 
-**Note**: Blockers are handled inline during Step 4, so by this point all blockers have been resolved or skipped.
+### For Route B (Standard tasks)
+
+**Note**: Blockers are handled inline during Step 5, so by this point all blockers have been resolved or skipped.
 
 ```yaml
 AskUserQuestion tool:
@@ -180,10 +238,30 @@ Based on the user's selection:
 - "Skip review, create/update PR" → Invoke the `/workspace-create-or-update-pr` skill using the Skill tool
 - "Done for now" → End the workflow
 
+### For Route A (Research tasks)
+
+```yaml
+AskUserQuestion tool:
+  questions:
+    - question: "Research complete. The report is at artifacts/research-report.md. What would you like to do next?"
+      header: "Next Step"
+      multiSelect: false
+      options:
+        - label: "Done"
+          description: "Research is complete, no further action needed"
+        - label: "Create implementation workspace"
+          description: "Use findings to create a new workspace with implementation TODOs"
+```
+
+Based on the user's selection:
+- "Done" → End the workflow
+- "Create implementation workspace" → Guide the user to run `/workspace-init` for an implementation task based on the research findings
+
 **Important**: Always suggest `/workspace-create-or-update-pr` instead of manual `git push`. The skill handles both creating new PRs and updating existing PRs automatically.
 
 ## Notes
 
-- The skill delegates actual work to the `workspace-repo-todo-executor` agent
-- Each repository is processed by its own agent instance
-- The agent handles test execution, linting, and commits autonomously
+- The skill detects task type from README.md and routes to the appropriate agent
+- **Research tasks** (Route A): A single `workspace-researcher` agent handles all repositories
+- **Standard tasks** (Route B): Each repository is processed by its own `workspace-repo-todo-executor` agent instance
+- Agents handle their work autonomously (test execution, linting, commits for Route B; exploration and reporting for Route A)

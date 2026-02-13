@@ -11,9 +11,10 @@ This skill initializes a working environment for development tasks. It orchestra
 1. Workspace directory setup (via `setup-workspace.sh`)
 2. Repository addition with worktrees (via `setup-repository.sh`)
 3. README creation with task details
-4. TODO planning for each repository (via workspace-repo-todo-planner agent)
-5. Cross-repository coordination (via workspace-todo-coordinator agent)
-6. TODO validation and clarification (via workspace-repo-todo-reviewer agent)
+4. Task type branching (research tasks skip TODO planning)
+5. TODO planning for each repository (via workspace-repo-todo-planner agent) — *skipped for research*
+6. Cross-repository coordination (via workspace-todo-coordinator agent) — *skipped for research*
+7. TODO validation and clarification (via workspace-repo-todo-reviewer agent) — *skipped for research*
 
 **After initialization:** Use `/workspace-execute` to work through TODO items and complete the task.
 
@@ -130,7 +131,18 @@ After setup completes, update the generated `README.md` with:
 
 This README is the source of truth that the TODO planner agents will read. Accuracy is critical.
 
-### 4. Call workspace-repo-todo-planner for Each Repository
+### 4. Task Type Branching
+
+After filling in README.md, check the task type to determine the next steps:
+
+- If `**Task Type**` is `research`, `investigation`, `documentation`, or `design-doc` → **Skip Steps 5-7** (TODO planning is not needed). Go directly to **Step 8** (Commit).
+- For all other task types (feature, bugfix, etc.) → Continue with **Step 5** below.
+
+**Why skip?** These task types use the `workspace-researcher` agent (invoked via `/workspace-execute`) which reads directly from README.md. The agent explores repositories and produces a document (research report, design doc, etc.) as its output. Creating TODO items would cause duplicate work — the planner would explore the codebase to create TODOs, then the researcher would explore the same codebase again.
+
+**Guideline**: Use this path for tasks whose primary output is a **document** based on cross-repository exploration, not code changes.
+
+### 5. Call workspace-repo-todo-planner for Each Repository
 
 For each repository in the workspace, invoke the `workspace-repo-todo-planner` agent:
 
@@ -155,7 +167,7 @@ Each planner will:
 - Analyze the repository structure and documentation
 - Create detailed, actionable TODO items in `TODO-{repo-name}.md`
 
-### 5. Call workspace-todo-coordinator
+### 6. Call workspace-todo-coordinator
 
 After all TODO planners complete, invoke the `workspace-todo-coordinator` agent:
 
@@ -173,7 +185,7 @@ Task tool:
 - Restructure TODOs to maximize parallel execution
 - Add coordination notes to README.md
 
-### 6. Call workspace-repo-todo-reviewer for Each Repository
+### 7. Call workspace-repo-todo-reviewer for Each Repository
 
 After coordination completes, invoke the `workspace-repo-todo-reviewer` agent for each repository:
 
@@ -205,15 +217,19 @@ Task tool:
 4. If no issues (STATUS: CLEAN for all repos):
    - Proceed to commit
 
-### 7. Commit TODO Files
+### 8. Commit Workspace Files
 
-After review completes (and any clarifications are resolved), commit the TODO files:
+After review completes (and any clarifications are resolved), or directly after Step 3 for research tasks, commit the workspace files:
 
 ```bash
+# For research/investigation tasks (no TODO files):
+./.claude/scripts/commit-workspace-snapshot.sh {workspace-name} "Initialize research workspace"
+
+# For standard tasks (with TODO files):
 ./.claude/scripts/commit-workspace-snapshot.sh {workspace-name} "Add TODO items for all repositories"
 ```
 
-### 8. Display Workspace Files
+### 9. Display Workspace Files
 
 After committing, display the relative paths of all workspace files for the user:
 
@@ -229,7 +245,7 @@ List all TODO files that were created (one per repository).
 
 ## Example Usage
 
-### Example 1: Single Repository
+### Example 1: Single Repository (Feature)
 
 ```
 User: Initialize a workspace for user authentication feature in github.com/org/repo
@@ -237,18 +253,20 @@ Assistant:
   1. [Runs setup-workspace.sh] → Creates workspace/feature-user-auth-20260206
   2. [Runs setup-repository.sh] → Clones repo, creates worktree
   3. [Updates README.md Repositories section]
-  4. [Fills in README.md with task details (Objective, Context, etc.)]
+     [Fills in README.md with task details (Objective, Context, etc.)]
+  4. [Task Type: feature → Continue to Step 5]
   5. [Calls workspace-repo-todo-planner] → Creates TODO-repo.md
   6. [Calls workspace-todo-coordinator] → Optimizes (single repo, minimal changes)
   7. [Calls workspace-repo-todo-reviewer] → Validates TODO items
-  8. [If issues found, asks user for clarification]
+     [If issues found, asks user for clarification]
+  8. [Commits workspace files]
   9. [Displays workspace files]:
      - workspace/feature-user-auth-20260206/README.md
      - workspace/feature-user-auth-20260206/TODO-repo.md
-  10. Done!
+  Done!
 ```
 
-### Example 2: Multiple Repositories
+### Example 2: Multiple Repositories (Feature)
 
 ```
 User: Initialize a workspace for adding product IDs to cart, involving:
@@ -259,20 +277,39 @@ Assistant:
   1. [Runs setup-workspace.sh] → Creates workspace/feature-product-ids-20260206
   2. [Runs setup-repository.sh 3 times] → Adds 3 repos sequentially
   3. [Updates README.md Repositories section with all 3 repos]
-  4. [Fills in README.md with task details (Objective, Context, etc.)]
+     [Fills in README.md with task details (Objective, Context, etc.)]
+  4. [Task Type: feature → Continue to Step 5]
   5. [Calls 3 Task tools in single message for workspace-repo-todo-planner] → Creates TODO files in parallel
   6. [Calls workspace-todo-coordinator] → Optimizes for parallel execution
   7. [Calls 3 Task tools in single message for workspace-repo-todo-reviewer] → Validates all TODOs in parallel
-  8. [If issues found, asks user for clarification]
+     [If issues found, asks user for clarification]
+  8. [Commits workspace files]
   9. [Displays workspace files]:
      - workspace/feature-product-ids-20260206/README.md
      - workspace/feature-product-ids-20260206/TODO-proto.md
      - workspace/feature-product-ids-20260206/TODO-api.md
      - workspace/feature-product-ids-20260206/TODO-frontend.md
-  10. Done!
+  Done!
 ```
 
-### Example 3: Same Repository with Aliases (Dev/Prod)
+### Example 3: Research Task (Skips TODO Planning)
+
+```
+User: Investigate how authentication works across github.com/org/api and github.com/org/gateway
+Assistant:
+  1. [Runs setup-workspace.sh] → Creates workspace/research-auth-flow-20260206
+  2. [Runs setup-repository.sh 2 times] → Adds 2 repos
+  3. [Updates README.md Repositories section]
+     [Fills in README.md with research objectives]
+  4. [Task Type: research → Skip Steps 5-7]
+  8. [Commits workspace files]
+  9. [Displays workspace files]:
+     - workspace/research-auth-flow-20260206/README.md
+     (No TODO files — research uses workspace-researcher agent via /workspace-execute)
+  Done!
+```
+
+### Example 4: Same Repository with Aliases (Dev/Prod)
 
 ```
 User: Initialize a workspace for deploying a config change to both dev and prod,
@@ -280,23 +317,27 @@ User: Initialize a workspace for deploying a config change to both dev and prod,
 Assistant:
   1. [Runs setup-workspace.sh] → Creates workspace/feature-config-change-20260206
   2. [Runs setup-repository.sh with github.com/org/infra:dev]
-  3. [Runs setup-repository.sh with github.com/org/infra:prod]
-  4. [Updates README.md with both entries]
-  5. [Fills in README.md with task details]
-  6. [Calls 2 Task tools in single message for workspace-repo-todo-planner]
-  7. [Calls workspace-todo-coordinator]
-  8. [Calls 2 Task tools in single message for workspace-repo-todo-reviewer]
-  9. [If issues found, asks user for clarification]
-  10. [Displays workspace files]:
+     [Runs setup-repository.sh with github.com/org/infra:prod]
+  3. [Updates README.md with both entries]
+     [Fills in README.md with task details]
+  4. [Task Type: feature → Continue to Step 5]
+  5. [Calls 2 Task tools in single message for workspace-repo-todo-planner]
+  6. [Calls workspace-todo-coordinator]
+  7. [Calls 2 Task tools in single message for workspace-repo-todo-reviewer]
+     [If issues found, asks user for clarification]
+  8. [Commits workspace files]
+  9. [Displays workspace files]:
       - workspace/feature-config-change-20260206/README.md
       - workspace/feature-config-change-20260206/TODO-infra___dev.md
       - workspace/feature-config-change-20260206/TODO-infra___prod.md
-  11. Done! Each alias will result in a separate PR.
+  Done! Each alias will result in a separate PR.
 ```
 
 ## Next Steps - Ask User to Proceed
 
-After initialization is complete, **always ask the user** whether to proceed with the next step using AskUserQuestion:
+After initialization is complete, **always ask the user** whether to proceed with the next step using AskUserQuestion.
+
+### For standard tasks (feature, bugfix, etc.)
 
 ```yaml
 AskUserQuestion tool:
@@ -311,7 +352,22 @@ AskUserQuestion tool:
           description: "I'll review the workspace files first and execute later"
 ```
 
-If the user selects "Execute now", invoke the `/workspace-execute` skill using the Skill tool.
+### For research/investigation/documentation tasks
+
+```yaml
+AskUserQuestion tool:
+  questions:
+    - question: "Workspace initialization complete. Would you like to start the research?"
+      header: "Next Step"
+      multiSelect: false
+      options:
+        - label: "Start research now"
+          description: "Run /workspace-execute to begin cross-repository investigation"
+        - label: "Skip for now"
+          description: "I'll review the workspace README first and start later"
+```
+
+If the user selects "Execute now" or "Start research now", invoke the `/workspace-execute` skill using the Skill tool.
 
 ## Notes
 
