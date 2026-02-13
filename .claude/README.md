@@ -32,6 +32,34 @@ workspace/{workspace-name}/TODO-{repo}.md
 
 This applies to all agents and skills that read/write workspace files, especially when the working directory is inside a repository worktree (`workspace/{workspace-name}/{org}/{repo}/`).
 
+## Working Directory Rules (CRITICAL)
+
+**NEVER use `cd` in Bash commands. ALWAYS execute commands from the project root.**
+
+The project root is the directory containing `.claude/` (i.e., the ai-workspace root). All Bash commands — including git operations, test runners, linters, and build tools — MUST be executed from this root using either:
+- The `-C` flag (for git): `git -C workspace/{workspace-name}/{org}/{repo} status`
+- Absolute or relative paths from root: `npm test --prefix workspace/{workspace-name}/{org}/{repo}`
+
+This applies to **all agents and skills** without exception.
+
+**Correct:**
+```bash
+git -C workspace/feature-auth-20260116/github.com/org/repo add -A
+git -C workspace/feature-auth-20260116/github.com/org/repo status
+git -C workspace/feature-auth-20260116/github.com/org/repo commit -m "fix: something"
+```
+
+**Incorrect (NEVER do this):**
+```bash
+cd workspace/feature-auth-20260116 && git add -A && git status
+cd workspace/feature-auth-20260116/github.com/org/repo && npm test
+```
+
+**Why this matters:**
+- `cd` changes the working directory, which breaks relative path resolution for file tools (Read, Write, Edit, Glob, Grep)
+- Permission patterns in `settings.local.json` are matched from the project root
+- Agents and skills must maintain a consistent working directory throughout their execution
+
 ## Implementation Policies for Agents
 
 Agents are autonomous workers that perform specific tasks. They are invoked via the `Task` tool with `run_in_background: true`.

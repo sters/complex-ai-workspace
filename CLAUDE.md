@@ -160,6 +160,7 @@ Each workspace is a git repository that tracks README.md, TODO-*.md, and artifac
 
 ## Key Constraints
 
+- **Never use `cd` in Bash commands** — always execute from the project root (ai-workspace root). Use `git -C <path>` or tool-specific path arguments instead. See [.claude/README.md](./.claude/README.md) for details.
 - Never push to remote unless explicitly requested
 - Never merge branches
 - Work only within the workspace directory scope

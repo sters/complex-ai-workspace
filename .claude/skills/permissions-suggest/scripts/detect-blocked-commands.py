@@ -151,10 +151,20 @@ def main():
     # Count occurrences and filter out existing rules
     counter = Counter(all_blocked)
 
+    # Build prefix list from wildcard rules (e.g., "git -C:*" -> "git -C")
+    wildcard_prefixes = []
+    for rule in existing_rules:
+        if rule.endswith(":*"):
+            wildcard_prefixes.append(rule[:-2])  # Remove ":*" suffix
+
     results = []
     for rule_content, count in counter.most_common():
-        if rule_content not in existing_rules:
-            results.append({"ruleContent": rule_content, "count": count})
+        if rule_content in existing_rules:
+            continue
+        # Check if the command matches any wildcard prefix
+        if any(rule_content.startswith(prefix) for prefix in wildcard_prefixes):
+            continue
+        results.append({"ruleContent": rule_content, "count": count})
 
     print(json.dumps(results, indent=2))
 
